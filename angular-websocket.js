@@ -5,19 +5,13 @@ module.provider('WebSocket', function() {
     // when forwarding events, prefix the event name
     var _prefix = 'websocket:';
     var _WebSocket;
-    var _host;
-
-    this.host = function(setHost) {
-      _host = setHost;
-      return this;
-    };
 
     this.prefix = function(newPrefix) {
       _prefix = newPrefix;
       return this;
     };
 
-    this.WebSocket = function(url, protocols) {
+    this.url = function(url, protocols) {
       protocols = Array.prototype.slice.call(arguments, 1);
       _WebSocket = new WebSocket(url, protocols);
       return this;
