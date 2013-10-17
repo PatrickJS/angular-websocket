@@ -1,0 +1,22 @@
+{
+  "name": "angular-websocket",
+  "version": "0.0.1",
+  "homepage": "https://github.com/gdi2290/angular-websocket",
+  "authors": [
+    "gdi2290 <github@gdi2290.com>"
+  ],
+  "main": "angular-websocket.js",
+  "description": "WebSocket service for Angular.js",
+  "ignore": [
+    "**/.*",
+    "*.yml",
+    "*.xml",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.0"
+  }
+}
