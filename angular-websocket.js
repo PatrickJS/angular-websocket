@@ -3,7 +3,7 @@
 
 module.provider('WebSocket', function() {
     // when forwarding events, prefix the event name
-    var _prefix = 'websocket:',
+    var _prefix = 'websocket:';
     var _WebSocket;
     var _host;
 
@@ -32,7 +32,7 @@ module.provider('WebSocket', function() {
         return function(args) {
           args = Array.prototype.slice.call(arguments);
           $timeout(function() {
-            callback.apply(socket, args);
+            callback.apply(ws, args);
           });
         };
       };
@@ -42,7 +42,7 @@ module.provider('WebSocket', function() {
         return function(eventName, callback) {
           ws[event](eventName, asyncAngularify(callback));
         };
-      }
+      };
 
       var wrappedWebSocket = {
         on: addListener('message'),
