@@ -33,8 +33,8 @@ module.provider('WebSocket', function() {
 
       var addListener = function(event) {
         event = event && 'on'+event || 'onmessage';
-        return function(eventName, callback) {
-          ws[event](eventName, asyncAngularify(callback));
+        return function(callback) {
+          ws[event](asyncAngularify(callback));
         };
       };
 
