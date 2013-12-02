@@ -1,7 +1,8 @@
 # angular-websocket [![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png?branch=master)](https://travis-ci.org/gdi2290/angular-websocket)
 
 WebSockets for Angular.js
-email me if something is broken.
+<br>
+Email me if something is broken.
 
 #How do I add this to my project?
 
