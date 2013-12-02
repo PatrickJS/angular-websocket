@@ -13,7 +13,7 @@
     <h2>WebSocket Test</h2>
     Connection: {{ status }}
     <div id="output" ng-repeat="message in messages">
-      {{ message.text }} <small>{{ message.created_at | date }}</small>
+      Message: {{ message.text }} <small>{{ message.created_at | date }}</small>
     </div>
   </div>
 
