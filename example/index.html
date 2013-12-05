@@ -8,14 +8,48 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-animate.min.js"></script>
 </head>
 <body class="ng-cloak" ng-app="chat">
-  <h2>WebSocket Test</h2>
-
-  <div id="output">
-
+  <div ng-controller="MessengerCtrl">
+    <h2>WebSocket Test</h2>
+    Connection: {{ status }}
+    <div id="output" ng-repeat="message in messages">
+      {{ message.text }} <small>{{ message.created_at | date }}</small>
+    </div>
   </div>
 
   <script language="javascript" type="text/javascript">
     angular.module('chat', ['ngAnimate'])
+    .controller('MessengerCtrl', function($scope, MessagesService, WebSocket) {
+      $scope.messages = MessagesService.get();
+      $scope.status = WebSocket.status();
+    })
+    .factory('MessagesService', function($q) {
+      var _messages = [
+        {
+          text: 'test message',
+          created_at: new Date()
+        }
+      ];
+
+      return {
+        sync: function() {
+          var dfd = $q.defer();
+          dfd.resolve(_messages)
+          return dfd.promise;
+        },
+        get: function() {
+          return _messages;
+        }
+      } // end return
+    })
+    .factory('WebSocket',function() {
+      var _status = ['DISCONNECTED', 'CONNECTED'];
+      var _currentStatus = 0;
+      return {
+        status: function() {
+          return _status[_currentStatus];
+        }
+      }
+    })
 
     var wsUri = "ws://echo.websocket.org/";
 
