@@ -1,6 +1,6 @@
 {
   "name": "angular-websocket",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/gdi2290/angular-websocket",
   "authors": [
     "gdi2290 <github@gdi2290.com>"
@@ -17,6 +17,6 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.2.0"
+    "angular": "*"
   }
 }
