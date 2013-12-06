@@ -11,9 +11,9 @@ module.provider('WebSocket', function() {
       return this;
     };
 
-    this.url = function(url, protocols) {
+    this.uri = function(uri, protocols) {
       protocols = Array.prototype.slice.call(arguments, 1);
-      _WebSocket = new WebSocket(url, protocols);
+      _WebSocket = new WebSocket(uri, protocols);
       return this;
     };
 
@@ -34,18 +34,27 @@ module.provider('WebSocket', function() {
       var addListener = function(event) {
         event = event && 'on'+event || 'onmessage';
         return function(callback) {
-          ws[event](asyncAngularify(callback));
+          ws[event] = asyncAngularify(callback);
+          return this;
         };
       };
 
       var wrappedWebSocket = {
-        on: addListener('message'),
+        on: function(event) {
+          return addListener(event);
+        },
         onmessage: addListener('message'),
         onclose: addListener('close'),
         onopen: addListener('open'),
         onerror: addListener('error'),
+        new: function(uri, protocols) {
+          protocols = Array.prototype.slice.call(arguments, 1);
+          ws = new WebSocket(url, protocols);
+          return this;
+        },
         close: function() {
           ws.close();
+          return this
         },
 
         send: function(eventName, data, callback) {
@@ -54,10 +63,13 @@ module.provider('WebSocket', function() {
           } else {
             if (callback) {
               ws.send(eventName, data, asyncAngularify(callback));
-            } else {
+            } else if (data) {
               ws.send(eventName, data);
+            } else {
+              ws.send(eventName);
             }
           }
+          return this;
         },
 
         removeListener: function(args) {

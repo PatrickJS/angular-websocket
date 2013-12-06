@@ -24,7 +24,7 @@ You can download angular-websocket by:
   .config(function(WebSocketProvider){
     WebSocketProvider
       .prefix('')
-      .url('ws://localhost:8080');
+      .uri('ws://echo.websocket.org/');
   });
 
   angular.module('controllers', [])
@@ -33,6 +33,12 @@ You can download angular-websocket by:
       WebSocket.onopen(function() {
         console.log('connection');
       });
+
+      WebSocket.onmessage(function(event) {
+        console.log('message: ', event.data);
+      });
+
+
 
     });
 </script>
