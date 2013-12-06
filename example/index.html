@@ -31,14 +31,16 @@
       $scope.messages = MessagesService.get();
       $scope.status = TestWebSocket.status();
 
-      WebSocket.onopen(function() {
-        console.log('connection');
-      });
-      WebSocket.send('Hello World');
       WebSocket.onmessage(function(event) {
         console.log('message: ', event);
       });
-
+      WebSocket.onclose(function() {
+        console.log('closed connection');
+      });
+      WebSocket.onopen(function() {
+        console.log('connection');
+        WebSocket.send('Hello World');
+      });
 
     })
     .factory('MessagesService', function($q) {

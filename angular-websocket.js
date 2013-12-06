@@ -57,18 +57,9 @@ module.provider('WebSocket', function() {
           return this
         },
 
-        send: function(eventName, data, callback) {
-          if (angular.isObject(eventName)) {
-            ws.send(eventName);
-          } else {
-            if (callback) {
-              ws.send(eventName, data, asyncAngularify(callback));
-            } else if (data) {
-              ws.send(eventName, data);
-            } else {
-              ws.send(eventName);
-            }
-          }
+        send: function(message) {
+          message = Array.prototype.slice.call(arguments);
+          ws.send.apply(ws, message);
           return this;
         },
 
