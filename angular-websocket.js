@@ -41,8 +41,8 @@ module.provider('WebSocket', function() {
 
       var wrappedWebSocket = {
         states: ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'],
-        on: function(event) {
-          return addListener(event);
+        on: function(event, callback) {
+          return addListener(event)(callback);
         },
         onmessage: addListener('message'),
         onclose: addListener('close'),
@@ -71,7 +71,8 @@ module.provider('WebSocket', function() {
 
         removeListener: function(args) {
           args = Array.prototype.slice.call(arguments);
-          return ws.removeListener.apply(ws, args);
+          ws.removeEventListener.apply(ws, args);
+          return this;
         },
 
         // when ws.on('someEvent', fn (data) { ... }),
@@ -87,15 +88,17 @@ module.provider('WebSocket', function() {
           }
 
           events.forEach(function(eventName) {
-            var prefixed = _prefix + eventName;
-            var forwardEvent = asyncAngularify(function (data) {
-              scope.$broadcast(prefixed, data);
+            var prefixedEvent = _prefix + eventName;
+            var forwardEvent = asyncAngularify(function(data) {
+              scope.$broadcast(prefixedEvent, data);
             });
             scope.$on('$destroy', function () {
-              ws.removeListener(eventName, forwardEvent);
+              ws.removeEventListener(eventName, forwardEvent);
             });
             ws.onmessage(eventName, forwardEvent);
           });
+          return this;
+
         }
       };
 
