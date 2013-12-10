@@ -14,7 +14,7 @@ You can download angular-websocket by:
 
 
 ````html
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
 <script src="app/bower_components/angular-websocket/angular-websocket.js"></script>
 <script>
   angular.module('YOUR_APP', [
@@ -32,6 +32,7 @@ You can download angular-websocket by:
 
       WebSocket.onopen(function() {
         console.log('connection');
+        WebSocket.send('message')
       });
 
       WebSocket.onmessage(function(event) {
