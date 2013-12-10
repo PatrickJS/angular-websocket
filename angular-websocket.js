@@ -40,6 +40,7 @@ module.provider('WebSocket', function() {
       };
 
       var wrappedWebSocket = {
+        states: ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'],
         on: function(event) {
           return addListener(event);
         },
@@ -56,7 +57,12 @@ module.provider('WebSocket', function() {
           ws.close();
           return this
         },
-
+        readyState: function() {
+          return ws.readyState
+        },
+        currentState: function() {
+          return this.states[ws.readyState];
+        },
         send: function(message) {
           message = Array.prototype.slice.call(arguments);
           ws.send.apply(ws, message);
