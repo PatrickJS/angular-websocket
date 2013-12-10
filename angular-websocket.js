@@ -49,7 +49,7 @@ module.provider('WebSocket', function() {
         onerror: addListener('error'),
         new: function(uri, protocols) {
           protocols = Array.prototype.slice.call(arguments, 1);
-          ws = new WebSocket(url, protocols);
+          ws = new WebSocket(uri, protocols);
           return this;
         },
         close: function() {
