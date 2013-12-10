@@ -41,7 +41,7 @@
       });
       WebSocket.onopen(function() {
         console.log('connection open');
-        WebSocket.send('Hello World');
+        WebSocket.send('Hello World').send(' again').send(' and again');
       });
       setTimeout(function() {
         WebSocket.close();
