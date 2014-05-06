@@ -5,6 +5,9 @@ module.provider('WebSocket', function() {
     // when forwarding events, prefix the event name
     var _prefix = 'websocket:';
     var _WebSocket;
+    var _uri;
+    var _protocols;
+    var _definedEvents = [];
 
     this.prefix = function(newPrefix) {
       _prefix = newPrefix;
@@ -13,6 +16,8 @@ module.provider('WebSocket', function() {
 
     this.uri = function(uri, protocols) {
       protocols = Array.prototype.slice.call(arguments, 1);
+      _uri = uri;      
+      _protocols = protocols;
       _WebSocket = new WebSocket(uri, protocols);
       return this;
     };
@@ -35,6 +40,7 @@ module.provider('WebSocket', function() {
         event = event && 'on'+event || 'onmessage';
         return function(callback) {
           ws[event] = asyncAngularify(callback);
+          _definedEvents.push(event);
           return this;
         };
       };
@@ -48,9 +54,14 @@ module.provider('WebSocket', function() {
         onclose: addListener('close'),
         onopen: addListener('open'),
         onerror: addListener('error'),
-        new: function(uri, protocols) {
-          protocols = Array.prototype.slice.call(arguments, 1);
-          ws = new WebSocket(uri, protocols);
+        new: function() {
+          var oldws = ws;
+          ws = new WebSocket(_uri, _protocols);
+          //assign the old events to the new websocket
+          var _len;
+          for (var i = 0, _len = _definedEvents.length; i < _len; i++) {
+            ws[_definedEvents[i]] = oldws[_definedEvents[i]];
+          }
           return this;
         },
         close: function() {
