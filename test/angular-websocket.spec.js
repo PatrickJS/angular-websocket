@@ -265,6 +265,7 @@ describe('$webSocket', function() {
 
 
     describe('._setInternalState()', function() {
+
       it('should change the private _internalConnectionState property', function() {
         var ws = $webSocket('ws://foo');
         $webSocketBackend.flush();
@@ -279,16 +280,16 @@ describe('$webSocket', function() {
         ws._internalConnectionState = 4;
         expect(function() {
           ws._setInternalState(5);
-        }).toThrow('state must be an integer between 0 and 4, got: 5');
+        }).toThrowError('state must be an integer between 0 and 4, got: 5');
         expect(ws._internalConnectionState).toBe(4);
       });
 
 
       it('should cancel everything inside the sendQueue if the state is 4', inject(function($q) {
         var ws = $webSocket('ws://foo');
+        $webSocketBackend.flush();
         var deferred = $q.defer();
         var spy = spyOn(deferred, 'reject');
-        $webSocketBackend.flush();
         ws.sendQueue.push({
           deferred: deferred,
         });
@@ -446,7 +447,7 @@ describe('$webSocket', function() {
         ws.onOpenCallbacks.push(spy);
         ws._onOpenHandler.call(ws);
         ws._onOpenHandler.call(ws);
-        expect(spy.callCount).toBe(2);
+        expect(spy.calls.count()).toBe(2);
       });
 
 
