@@ -5,6 +5,21 @@
   "description": "An AngularJS 1.x WebSocket service for connecting client applications to servers.",
   "homepage": "https://github.com/gdi2290/angular-websocket",
   "bugs": "https://github.com/gdi2290/angular-websocket/issues",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "javascript",
+    "realtime",
+    "websockets",
+    "websocket",
+    "angular-websocket",
+    "angular-websockets",
+    "angular-socket",
+    "ngWebSocket",
+    "ngWebSockets",
+    "gdi2290",
+    "PatrickJS"
+  ],
   "scripts": {
     "test": "./test.sh",
     "dist": "./dist.sh"
