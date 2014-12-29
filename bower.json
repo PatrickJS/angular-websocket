@@ -1,6 +1,6 @@
 {
   "name": "angular-websocket",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/gdi2290/angular-websocket",
   "description": "An AngularJS 1.x WebSocket service for connecting client applications to servers.",
   "keywords": [
@@ -23,6 +23,16 @@
   ],
   "main": "angular-websocket.min.js",
   "ignore": [
+    ".bowerrc",
+    ".gitignore",
+    ".jshintignore",
+    ".jshintrc",
+    "karma.conf.js",
+    "test.sh",
+    "dist.sh",
+    "src",
+    "example",
+    "package.json",
     "**/.*",
     "*.yml",
     "*.xml",

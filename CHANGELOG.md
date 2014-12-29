@@ -1,3 +1,10 @@
+## 1.0.4 (2014-12-29)
+
+Features:
+  - Update bower ignore
+  - Add more dot files
+  - Add keywords to bower.json and package.json
+
 ## 1.0.3 (2014-12-29)
 
 Bugfixes:
