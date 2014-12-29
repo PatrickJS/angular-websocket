@@ -1,4 +1,4 @@
-# angular-websocket [![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png)](https://travis-ci.org/gdi2290/angular-websocket)
+# angular-websocket [![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png)](https://travis-ci.org/gdi2290/angular-websocket) [![Dependency Status](https://david-dm.org/gdi2290/angular-websocket.svg)](https://david-dm.org/gdi2290/angular-websocket) [![devDependency Status](https://david-dm.org/gdi2290/angular-websocket/dev-status.svg)](https://david-dm.org/gdi2290/angular-websocket#info=devDependencies)
 
 ## Status: Looking for feedback about new API changes
 
@@ -119,7 +119,7 @@ $ bower install
 ```
 
 ### Unit Tests
-`$ npm test` Run karma
+`$ npm test` Run karma in Chrome, Firefox, and Safari
 
 ### Manual Tests
 
@@ -135,6 +135,7 @@ Open localhost:8081/test-app.html and watch browser console and node console to 
 
 ## TODO
  * Add `protocols` parameter to constructor
+ * Allow more control over $digest cycle per WebSocket instance
 
 ## License
 [MIT](https://github.com/gdi2290/angular-websocket/blob/master/LICENSE)
