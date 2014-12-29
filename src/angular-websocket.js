@@ -6,6 +6,23 @@
   var isString = angular.isString;
   var isFunction = angular.isFunction;
   var isDefined = angular.isDefined;
+  var isArray = angular.isArray;
+  // ie8 wat
+  if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(elt /*, from*/) {
+      var len = this.length >>> 0;
+      var from = Number(arguments[1]) || 0;
+      from = (from < 0) ? Math.ceil(from) : Math.floor(from);
+      if (from < 0) {
+        from += len;
+      }
+
+      for (; from < len; from++) {
+        if (from in this && this[from] === elt) { return from; }
+      }
+      return -1;
+    };
+  }
 
   $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
@@ -237,7 +254,12 @@
         throw new Error('state must be an integer between 0 and 4, got: ' + state);
       }
 
+      // ie8 wat
+      if (!objectDefineProperty) {
+        this.readyState = state || this.socket.readyState;
+      }
       this._internalConnectionState = state;
+
 
       angular.forEach(this.sendQueue, function(pending) {
         pending.deferred.reject('Message cancelled due to closed socket connection');
