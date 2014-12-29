@@ -127,6 +127,9 @@ $ npm install
 $ bower install
 ```
 
+## Changelog
+[Changelog](https://github.com/gdi2290/angular-websocket/blob/master/CHANGELOG.md)
+
 ### Unit Tests
 `$ npm test` Run karma in Chrome, Firefox, and Safari
 
