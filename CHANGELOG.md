@@ -1,3 +1,8 @@
+## 1.0.3 (2014-12-29)
+
+Bugfixes:
+  - Module name typo in Readme
+
 ## 1.0.2 (2014-12-29)
 
 Bugfixes:
