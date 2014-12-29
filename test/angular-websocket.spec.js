@@ -1,13 +1,14 @@
-describe('$webSocket', function() {
-  describe('$webSocketBackend', function() {
-    var $window, $webSocket, $webSocketBackend, WSMock, localMocks = {};
+describe('angular-websocket', function() {
+
+  describe('$websocketBackend', function() {
+    var $window, $websocket, $websocketBackend, WSMock, localMocks = {};
 
     beforeEach(module('ngWebSocket'));
 
-    beforeEach(inject(function (_$window_, _$webSocket_, _$webSocketBackend_) {
+    beforeEach(inject(function (_$window_, _$websocket_, _$websocketBackend_) {
       $window = _$window_;
-      $webSocket = _$webSocket_;
-      $webSocketBackend = _$webSocketBackend_;
+      $websocket = _$websocket_;
+      $websocketBackend = _$websocketBackend_;
 
       localMocks.sendMock = function() {};
       localMocks.closeMock = function() {};
@@ -24,7 +25,7 @@ describe('$webSocket', function() {
 
     it('should complain if not given a valid url', function() {
       expect(function() {
-        $webSocketBackend.createWebSocketBackend('%foobar/baz');
+        $websocketBackend.createWebSocketBackend('%foobar/baz');
       })
       .toThrowError('Invalid url provided');
     });
@@ -32,15 +33,15 @@ describe('$webSocket', function() {
   });
 
 
-  describe('$webSocket', function() {
-    var $window, $webSocket, $webSocketBackend, WSMock, localMocks = {};
+  describe('$websocket', function() {
+    var $window, $websocket, $websocketBackend, WSMock, localMocks = {};
 
     beforeEach(module('ngWebSocket', 'ngWebSocketMock'));
 
-    beforeEach(inject(function (_$window_, _$webSocket_, _$webSocketBackend_) {
+    beforeEach(inject(function (_$window_, _$websocket_, _$websocketBackend_) {
       $window = _$window_;
-      $webSocket = _$webSocket_;
-      $webSocketBackend = _$webSocketBackend_;
+      $websocket = _$websocket_;
+      $websocketBackend = _$websocketBackend_;
 
       localMocks.sendMock = function() {};
       localMocks.closeMock = function() {};
@@ -54,24 +55,47 @@ describe('$webSocket', function() {
     }));
 
     afterEach(function() {
-      $webSocketBackend.verifyNoOutstandingRequest();
-      $webSocketBackend.verifyNoOutstandingExpectation();
+      $websocketBackend.verifyNoOutstandingRequest();
+      $websocketBackend.verifyNoOutstandingExpectation();
     });
 
 
     it('should accept a wss url', function() {
       var url = 'wss://foo/secure';
-      $webSocketBackend.expectConnect(url);
-      var ws = $webSocket(url);
-      $webSocketBackend.flush();
+      $websocketBackend.expectConnect(url);
+      var ws = $websocket(url);
+      expect(ws.ssl).toEqual(true);
+      $websocketBackend.flush();
+    });
+
+    it('should accept protocols', function() {
+
+      var url = 'ws://foo/secure';
+      var protocols1 = 'Swag-Protocol';
+      $websocketBackend.expectConnect(url, protocols1);
+      var ws1 = $websocket(url, protocols1);
+      expect(ws1.protocols).toEqual('Swag-Protocol');
+
+      var url2 = 'ws://foo/secure';
+      $websocketBackend.expectConnect(url2);
+      var ws2 = $websocket(url2);
+      expect(ws2.protocols).toEqual('Sec-WebSocket-Protocol');
+
+      var url3 = 'ws://foo/secure';
+      var protocols3 = ['Swag-Protocol', 'Sec-WebSocket-Protocol'];
+      $websocketBackend.expectConnect(url3, protocols3);
+      var ws3 = $websocket(url3, protocols3);
+      expect(ws3.protocols).toEqual(['Swag-Protocol', 'Sec-WebSocket-Protocol']);
+
+      $websocketBackend.flush();
     });
 
 
     it('should return an object containing a reference to the WebSocket instance', function() {
       var url = 'ws://reference';
-      $webSocketBackend.expectConnect(url);
-      expect(typeof $webSocket(url).socket.send).toBe('function');
-      $webSocketBackend.flush();
+      $websocketBackend.expectConnect(url);
+      expect(typeof $websocket(url).socket.send).toBe('function');
+      $websocketBackend.flush();
     });
 
 
@@ -79,16 +103,16 @@ describe('$webSocket', function() {
       var url1 = 'ws://foo/one';
       var url2 = 'ws://foo/two';
 
-      $webSocketBackend.expectConnect(url1);
-      var ws1 = $webSocket(url1);
+      $websocketBackend.expectConnect(url1);
+      var ws1 = $websocket(url1);
 
-      $webSocketBackend.expectConnect(url2);
-      var ws2 = $webSocket(url2);
+      $websocketBackend.expectConnect(url2);
+      var ws2 = $websocket(url2);
 
       ws1.send('baz');
       expect(ws1.sendQueue.length).toBe(1);
       expect(ws2.sendQueue.length).toBe(0);
-      $webSocketBackend.flush();
+      $websocketBackend.flush();
     });
 
 
@@ -97,12 +121,12 @@ describe('$webSocket', function() {
 
       beforeEach(function() {
         url = 'ws://foo/bar';
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
       });
 
       afterEach(function() {
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
       it('should attempt connecting to a socket if provided a valid URL', function() {
@@ -119,7 +143,7 @@ describe('$webSocket', function() {
 
       it('should force reconnect if force parameter is true', function() {
         ws.socket.readyState = 1;
-        $webSocketBackend.expectConnect(url);
+        $websocketBackend.expectConnect(url);
         ws._connect(true);
       });
 
@@ -139,18 +163,18 @@ describe('$webSocket', function() {
       beforeEach(function() {
         url = 'ws://foo';
 
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
 
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
       afterEach(function() {
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
       it('should call close on the underlying socket', function() {
-        $webSocketBackend.expectClose();
+        $websocketBackend.expectClose();
         ws.close();
       });
 
@@ -162,7 +186,7 @@ describe('$webSocket', function() {
 
 
       it('should accept a force param to close the socket even if bufferedAmount is greater than 0', function() {
-        $webSocketBackend.expectClose();
+        $websocketBackend.expectClose();
         ws.socket.bufferedAmount = 5;
         ws.close(true);
       });
@@ -172,14 +196,14 @@ describe('$webSocket', function() {
     describe('._onCloseHandler', function() {
       it('should call .reconnect if the CloseEvent indicates a non-intentional close', function() {
         var url = 'ws://foo/onclose';
-        $webSocketBackend.expectConnect(url);
+        $websocketBackend.expectConnect(url);
 
-        var ws = $webSocket(url);
+        var ws = $websocket(url);
         var spy = spyOn(ws, 'reconnect');
         ws._onCloseHandler({code: 4000});
         expect(spy).toHaveBeenCalled();
 
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
     });
 
@@ -188,13 +212,13 @@ describe('$webSocket', function() {
       it('should add the passed in function to the onOpenCallbacks array', function() {
         var cb = function() {};
         var url = 'ws://foo';
-        $webSocketBackend.expectConnect(url);
+        $websocketBackend.expectConnect(url);
 
-        var ws = $webSocket(url);
+        var ws = $websocket(url);
         ws.onOpen(cb);
         expect(ws.onOpenCallbacks[0]).toBe(cb);
 
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
     });
 
@@ -204,12 +228,12 @@ describe('$webSocket', function() {
 
       beforeEach(function() {
         url = 'ws://foo/bar';
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
       });
 
       afterEach(function() {
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
 
@@ -278,16 +302,16 @@ describe('$webSocket', function() {
     describe('._setInternalState()', function() {
 
       it('should change the private _internalConnectionState property', function() {
-        var ws = $webSocket('ws://foo');
-        $webSocketBackend.flush();
+        var ws = $websocket('ws://foo');
+        $websocketBackend.flush();
         ws._setInternalState(4);
         expect(ws._internalConnectionState).toBe(4);
       });
 
 
       it('should only allow integer values from 0-4', function() {
-        var ws = $webSocket('ws://foo');
-        $webSocketBackend.flush();
+        var ws = $websocket('ws://foo');
+        $websocketBackend.flush();
         ws._internalConnectionState = 4;
         expect(function() {
           ws._setInternalState(5);
@@ -297,8 +321,8 @@ describe('$webSocket', function() {
 
 
       it('should cancel everything inside the sendQueue if the state is 4', inject(function($q) {
-        var ws = $webSocket('ws://foo');
-        $webSocketBackend.flush();
+        var ws = $websocket('ws://foo');
+        $websocketBackend.flush();
         var deferred = $q.defer();
         var spy = spyOn(deferred, 'reject');
         ws.sendQueue.push({
@@ -316,13 +340,13 @@ describe('$webSocket', function() {
       beforeEach(function() {
         url = 'ws://foo';
         fn = function() {};
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
       });
 
 
       afterEach(function() {
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
 
@@ -373,12 +397,12 @@ describe('$webSocket', function() {
       beforeEach(function() {
         url = 'ws://foo';
         fn = function() {};
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
       });
 
       afterEach(function() {
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
 
@@ -433,9 +457,9 @@ describe('$webSocket', function() {
 
       beforeEach(function() {
         url = 'ws://foo';
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
-        $webSocketBackend.flush();
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
+        $websocketBackend.flush();
       });
 
       it('should call fireQueue to flush any queued send() calls', function() {
@@ -479,9 +503,9 @@ describe('$webSocket', function() {
 
       beforeEach(function() {
         var url = 'ws://foo/bar';
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
-        $webSocketBackend.flush();
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
+        $websocketBackend.flush();
       });
 
 
@@ -498,18 +522,18 @@ describe('$webSocket', function() {
       it('should call send for every item in the queue if readyState is 1', function() {
         var data = {message: 'Hello', deferred: {resolve: angular.noop}};
         var stringified = JSON.stringify(data);
-        $webSocketBackend.expectSend(stringified);
+        $websocketBackend.expectSend(stringified);
         ws.sendQueue.unshift(data);
-        $webSocketBackend.expectSend(stringified);
+        $websocketBackend.expectSend(stringified);
         ws.sendQueue.unshift(data);
-        $webSocketBackend.expectSend(stringified);
+        $websocketBackend.expectSend(stringified);
         ws.sendQueue.unshift(data);
         ws.socket.readyState = 1;
 
         expect(ws.sendQueue.length).toBe(3);
         ws.fireQueue();
         expect(ws.sendQueue.length).toBe(0);
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
 
@@ -517,10 +541,10 @@ describe('$webSocket', function() {
         var data = {message: 'Send me', deferred: {resolve: angular.noop}};
         var stringified = JSON.stringify(data);
         ws.socket.readyState = 1;
-        $webSocketBackend.expectSend(stringified);
+        $websocketBackend.expectSend(stringified);
         ws.sendQueue.unshift(data);
         ws.fireQueue();
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
 
@@ -531,11 +555,11 @@ describe('$webSocket', function() {
         deferred.promise.then(spy);
         var data = {deferred: deferred, message: message};
         ws.socket.readyState = 1;
-        $webSocketBackend.expectSend(message);
+        $websocketBackend.expectSend(message);
         ws.sendQueue.unshift(data);
         ws.fireQueue();
         $rootScope.$digest();
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
         expect(spy).toHaveBeenCalled();
       }));
     }); // end .fireQueue()
@@ -546,9 +570,9 @@ describe('$webSocket', function() {
 
       beforeEach(function() {
         url = 'ws://foo';
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
-        $webSocketBackend.flush();
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
+        $websocketBackend.flush();
       });
 
 
@@ -579,9 +603,9 @@ describe('$webSocket', function() {
 
       beforeEach(function() {
         url = 'ws://foo';
-        $webSocketBackend.expectConnect(url);
-        ws = $webSocket(url);
-        $webSocketBackend.flush();
+        $websocketBackend.expectConnect(url);
+        ws = $websocket(url);
+        $websocketBackend.flush();
       });
 
       it('should contain the basic readyState constants for WebSocket', function() {
@@ -609,11 +633,11 @@ describe('$webSocket', function() {
     describe('._reconnectableStatusCodes', function() {
       it('should contain status codes that warrant re-establishing a connection', function() {
         var url = 'ws://foo';
-        $webSocketBackend.expectConnect(url);
-        var ws = $webSocket(url);
+        $websocketBackend.expectConnect(url);
+        var ws = $websocket(url);
         expect(ws._reconnectableStatusCodes.length).toBe(1);
         expect(ws._reconnectableStatusCodes).toEqual([4000]);
-        $webSocketBackend.flush();
+        $websocketBackend.flush();
       });
 
 
@@ -622,16 +646,16 @@ describe('$webSocket', function() {
 
     // alias
     xdescribe('WebSocket', function() {
-      it('should alias $webSocket', inject(function(WebSocket) {
-        expect(WebSocket).toBe($webSocket);
+      it('should alias $websocket', inject(function(WebSocket) {
+        expect(WebSocket).toBe($websocket);
       }));
     });
 
 
     // alias
     xdescribe('WebSocketBackend', function() {
-      it('should alias $webSocketBackend', inject(function(WebSocketBackend) {
-        expect(WebSocketBackend).toBe($webSocketBackend);
+      it('should alias $websocketBackend', inject(function(WebSocketBackend) {
+        expect(WebSocketBackend).toBe($websocketBackend);
       }));
     });
 
@@ -641,11 +665,11 @@ describe('$webSocket', function() {
      it('should add the passed in function to the onErrorCallbacks array', function() {
        var cb = function() {};
        var url = 'ws://foo';
-       $webSocketBackend.expectConnect(url);
-       var ws = $webSocket(url);
+       $websocketBackend.expectConnect(url);
+       var ws = $websocket(url);
        ws.onError(cb);
        expect(ws.onErrorCallbacks[0]).toBe(cb);
-       $webSocketBackend.flush();
+       $websocketBackend.flush();
      });
 
    }); // end .onError()
@@ -656,9 +680,9 @@ describe('$webSocket', function() {
 
      beforeEach(function() {
        url = 'ws://foo';
-       $webSocketBackend.expectConnect(url);
-       ws = $webSocket(url);
-       $webSocketBackend.flush();
+       $websocketBackend.expectConnect(url);
+       ws = $websocket(url);
+       $websocketBackend.flush();
      });
 
      it('should call the passed-in function when an error occurs', function() {
@@ -682,5 +706,5 @@ describe('$webSocket', function() {
    }); // end ._onErrorHandler()
 
 
-  }); // end $webSocketBackend
-}); // end $webSocket
+  }); // end $websocketBackend
+}); // end $websocket

@@ -7,8 +7,8 @@
   var isFunction = angular.isFunction;
   var isDefined = angular.isDefined;
 
-  $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$webSocketBackend'];
-  function $WebSocketProvider($rootScope, $q, $timeout, $webSocketBackend) {
+  $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
+  function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
     function safeDigest(autoApply) {
       if (autoApply && !$rootScope.$$phase) {
@@ -273,9 +273,9 @@
   }
 
   angular.module('ngWebSocket', [])
-  .factory('$webSocket', $WebSocketProvider)
+  .factory('$websocket', $WebSocketProvider)
   .factory('WebSocket',  $WebSocketProvider)
-  .service('$webSocketBackend', $WebSocketBackend)
+  .service('$websocketBackend', $WebSocketBackend)
   .service('WebSocketBackend', $WebSocketBackend);
 
 

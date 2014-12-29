@@ -95,7 +95,7 @@
 
   angular.module('ngWebSocketMock', [])
   .service('WebSocketBackend',  $WebSocketBackend)
-  .service('$webSocketBackend', $WebSocketBackend);
+  .service('$websocketBackend', $WebSocketBackend);
 
   angular.module('angular-websocket-mock', ['ngWebSocketMock']);
 
