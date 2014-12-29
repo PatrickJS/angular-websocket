@@ -1,7 +1,11 @@
 # angular-websocket
-[![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png)](https://travis-ci.org/gdi2290/angular-websocket) [![Bower version](https://badge.fury.io/bo/angular-websocket.svg)](http://badge.fury.io/bo/angular-websocket) [![npm version](https://badge.fury.io/js/angular-websocket.svg)](http://badge.fury.io/js/angular-websocket) [![Dependency Status](https://david-dm.org/gdi2290/angular-websocket.svg)](https://david-dm.org/gdi2290/angular-websocket) [![devDependency Status](https://david-dm.org/gdi2290/angular-websocket/dev-status.svg)](https://david-dm.org/gdi2290/angular-websocket#info=devDependencies)
+[![Travis](https://img.shields.io/travis/gdi2290/angular-websocket.svg?style=flat)](https://travis-ci.org/gdi2290/angular-websocket)
+[![Bower](https://img.shields.io/bower/v/angular-websocket.svg?style=flat)](https://github.com/gdi2290/angular-websocket)
+[![npm](https://img.shields.io/npm/v/angular-websocket.svg?style=flat)](https://www.npmjs.com/package/angular-websocket)
+[![Dependency Status](https://david-dm.org/gdi2290/angular-websocket.svg)](https://david-dm.org/gdi2290/angular-websocket)
+[![devDependency Status](https://david-dm.org/gdi2290/angular-websocket/dev-status.svg)](https://david-dm.org/gdi2290/angular-websocket#info=devDependencies)
 
-## Status: Looking for feedback about new API changes
+### Status: Looking for feedback about new API changes
 
 An AngularJS 1.x WebSocket service for connecting client applications to servers.
 
@@ -16,6 +20,10 @@ You can download angular-websocket by:
 ## Usage
 
 ```html
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
+  <script type="text/javascript">
+    !function(e){"use strict";for(var o,i,r={},t=function(){},n="memory".split(","),l="assert,clear,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profiles,profileEnd,show,table,time,timeEnd,timeline,timelineEnd,timeStamp,trace,warn".split(",");o=n.pop();)e[o]=e[o]||r;for(;i=l.pop();)e[i]=e[i]||t}(this.console=this.console||{});
+  </script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
   <script src="app/bower_components/angular-websocket/angular-websocket.js"></script>
   <section ng-controller="SomeController">
@@ -29,9 +37,9 @@ You can download angular-websocket by:
     angular.module('YOUR_APP', [
       'ngWebsocket'
     ])
-    .factory('MyData', function($webSocket) {
+    .factory('MyData', function($websocket) {
       // Open a WebSocket connection
-      var ws = $webSocket('wss://website.com/data');
+      var ws = $websocket('wss://website.com/data');
 
       var collection = [];
 
@@ -55,18 +63,20 @@ You can download angular-websocket by:
 
 ## API
 
-### Factory: `$webSocket` (in module `ngWebSocket`)
+### Factory: `$websocket` (in module `ngWebSocket`)
 
-returns instance of $WebSocket
+returns instance of $Websocket
 
 ### Methods
 
 name        | arguments                                              | description
 ------------|--------------------------------------------------------|------------
-$webSocket <br>_constructor_ | url:String                              | Creates and opens a [WebSocket](http://mdn.io/API/WebSocket) instance. `var ws = $webSocket('ws://foo');`
+$websocket <br>_constructor_ | url:String                              | Creates and opens a [WebSocket](http://mdn.io/API/WebSocket) instance. <br>`var ws = $websocket('ws://foo');`
 send        | data:String,Object returns                             | Adds data to a queue, and attempts to send if socket is ready. Accepts string or object, and will stringify objects before sending to socket.
 onMessage   | callback:Function <br>options{filter:String,RegExp, autoApply:Boolean=true} | Register a callback to be fired on every message received from the websocket, or optionally just when the message's `data` property matches the filter provided in the options object. Each message handled will safely call `$rootScope.$digest()` unless `autoApply` is set to `false in the options. Callback gets called with a [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent?redirectlocale=en-US&redirectslug=WebSockets%2FWebSockets_reference%2FMessageEvent) object.
 onOpen      | callback:Function                                      | Function to be executed each time a socket connection is opened for this instance.
+onClose     | callback:Function                                      | Function to be executed each time a socket connection is closed for this instance.
+onError     | callback:Function                                      | Function to be executed each time a socket connection has an Error for this instance.
 close       | force:Boolean:_optional_                               | Close the underlying socket, as long as no data is still being sent from the client. Optionally force close, even if data is still being sent, by passing `true` as the `force` parameter. To check if data is being sent, read the value of `socket.bufferedAmount`.
 
 ### Properties
@@ -82,7 +92,7 @@ maxTimeout         | Number           | Should be as low as possible to keep you
 
 ### CancelablePromise
 
-This type is returned from the `send()` instance method of $webSocket, inherits from [$q.defer().promise](https://ng-click.com/$q).
+This type is returned from the `send()` instance method of $websocket, inherits from [$q.defer().promise](https://ng-click.com/$q).
 
 ### Methods
 
@@ -92,7 +102,7 @@ cancel      | | Alias to `deferred.reject()`, allows preventing an unsent messag
 then        | resolve:Function, reject:Function | Resolves when message has been passed to socket, presuming the socket has a `readyState` of 1. Rejects if the socket is hopelessly disconnected now or in the future (i.e. the library is no longer attempting to reconnect). All messages are immediately rejected when the library has determined that re-establishing a connection is unlikely.
 
 
-### Service: `$webSocketBackend` (in module `ngWebSocketMock`)
+### Service: `$websocketBackend` (in module `ngWebSocketMock`)
 
 Similar to [`httpBackend`](https://ng-click.com/$httpBackend) mock in AngularJS's `ngMock` module
 
@@ -110,7 +120,7 @@ verifyNoOutstandingRequest     |            | Makes sure no requests are pending
 ## Logical Questions
 
  * *Q.*: What if the browser doesn't support WebSockets?
- * *A.*: This module will not help; it does not have a fallback story for browsers that do not support WebSockets.
+ * *A.*: This module will not help; it does not have a fallback story for browsers that do not support WebSockets. Please check your browser target support [here](http://caniuse.com/#feat=websockets)
 
 ## Development
 
@@ -124,18 +134,14 @@ $ bower install
 
 ### Manual Tests
 
-In the project root directory:
-
-`$ node test-server` Starts a sample web socket server to send/receive messages
-`$ ./node_modules/.bin http-server` - Basic http server to seve a static file
-Open localhost:8081/test-app.html and watch browser console and node console to see messages passing
+In the project root directory open `index.html` in the example folder
 
 ### Distribute
 `$ npm run dist` Builds files with uglifyjs
 
 
 ## TODO
- * Add `protocols` parameter to constructor
+ * Allow JSON if object is sent
  * Allow more control over $digest cycle per WebSocket instance
 
 ## License
