@@ -20,10 +20,6 @@ You can download angular-websocket by:
 ## Usage
 
 ```html
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
-  <script type="text/javascript">
-    !function(e){"use strict";for(var o,i,r={},t=function(){},n="memory".split(","),l="assert,clear,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profiles,profileEnd,show,table,time,timeEnd,timeline,timelineEnd,timeStamp,trace,warn".split(",");o=n.pop();)e[o]=e[o]||r;for(;i=l.pop();)e[i]=e[i]||t}(this.console=this.console||{});
-  </script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
   <script src="app/bower_components/angular-websocket/angular-websocket.js"></script>
   <section ng-controller="SomeController">

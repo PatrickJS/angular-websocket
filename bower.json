@@ -2,11 +2,11 @@
   "name": "angular-websocket",
   "version": "1.0.0",
   "homepage": "https://github.com/gdi2290/angular-websocket",
+  "description": "An AngularJS 1.x WebSocket service for connecting client applications to servers.",
   "authors": [
     "gdi2290 <github@gdi2290.com>"
   ],
   "main": "dist/angular-websocket.min.js",
-  "description": "WebSocket service for Angular.js",
   "ignore": [
     "**/.*",
     "*.yml",

@@ -2,7 +2,7 @@
   "name": "angular-websocket",
   "version": "1.0.0",
   "main": "angular-websocket.js",
-  "description": "WebSocket service for Angular.js",
+  "description": "An AngularJS 1.x WebSocket service for connecting client applications to servers.",
   "homepage": "https://github.com/gdi2290/angular-websocket",
   "bugs": "https://github.com/gdi2290/angular-websocket/issues",
   "scripts": {
@@ -23,7 +23,9 @@
       "type": "MIT"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "angular": "*"
+  },
   "devDependencies": {
     "karma": "^0.12.28",
     "karma-chrome-launcher": "~0.1.7",
