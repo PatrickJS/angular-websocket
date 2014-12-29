@@ -1,11 +1,11 @@
 {
   "name": "angular-websocket",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "homepage": "https://github.com/gdi2290/angular-websocket",
   "authors": [
     "gdi2290 <github@gdi2290.com>"
   ],
-  "main": "angular-websocket.js",
+  "main": "dist/angular-websocket.min.js",
   "description": "WebSocket service for Angular.js",
   "ignore": [
     "**/.*",
@@ -18,5 +18,9 @@
   ],
   "dependencies": {
     "angular": "*"
+  },
+  "devDependencies": {
+    "angular": "~1.3.8",
+    "angular-mocks": "~1.3.8"
   }
 }
