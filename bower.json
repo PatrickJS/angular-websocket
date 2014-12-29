@@ -5,7 +5,7 @@
   "authors": [
     "gdi2290 <github@gdi2290.com>"
   ],
-  "main": "angular-websocket.js",
+  "main": "dist/angular-websocket.min.js",
   "description": "WebSocket service for Angular.js",
   "ignore": [
     "**/.*",
