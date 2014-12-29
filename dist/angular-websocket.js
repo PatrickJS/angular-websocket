@@ -257,6 +257,7 @@
   .service('$webSocketBackend', $WebSocketBackend)
   .service('WebSocketBackend', $WebSocketBackend);
 
+
   angular.module('angular-websocket', ['ngWebSocket']);
 
 }());
