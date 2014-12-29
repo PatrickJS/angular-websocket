@@ -21,10 +21,10 @@ You can download angular-websocket by:
 
 ```html
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
-  <script src="app/bower_components/angular-websocket/angular-websocket.js"></script>
+  <script src="bower_components/angular-websocket/angular-websocket.js"></script>
   <section ng-controller="SomeController">
     <ul>
-      <li ng-repeat="data in collection track by $index">
+      <li ng-repeat="data in MyData.collection track by $index">
         {{ data }}
       </li>
     </ul>
@@ -35,24 +35,26 @@ You can download angular-websocket by:
     ])
     .factory('MyData', function($websocket) {
       // Open a WebSocket connection
-      var ws = $websocket('wss://website.com/data');
+      var dataStream = $websocket('wss://website.com/data');
 
       var collection = [];
 
-      ws.onMessage(function(message) {
+      dataStream.onMessage(function(message) {
         collection.push(message);
       });
 
-      return {
-        collection: data,
+      var methods = {
+        collection: collection,
         get: function() {
-          ws.send({action: 'get'});
+          dataStream.send({ action: 'get' });
         }
       };
+      
+      return methods;
     })
     .controller('SomeController', function (MyData) {
 
-      $scope.colection = MyData.data
+      $scope.MyData = MyData;
     });
   </script>
 ```
