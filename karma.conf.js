@@ -2,7 +2,8 @@
 // Generated on Thu Dec 25 2014 14:12:24 GMT-0800 (PST)
 
 module.exports = function(config) {
-  config.set({
+
+  var configuration = {
 
     // base path, that will be used to resolve files and exclude
     basePath: '',
@@ -56,11 +57,24 @@ module.exports = function(config) {
       'Safari'
     ],
 
+    customLaunchers: {
+      'Chrome_travis_ci': {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun: true
-  });
+  };
+
+  if (process.env.TRAVIS){
+    configuration.browsers = ['Firefox', 'Chrome_travis_ci'];
+  }
+
+  config.set(configuration);
 };
