@@ -85,11 +85,12 @@
       if (force || !this.socket.bufferedAmount) {
         this.socket.close();
       }
+      return this;
     };
 
     $WebSocket.prototype._connect = function (force) {
-      if (force || !this.socket || this.socket.readyState !== 1) {
-        this.socket = $webSocketBackend.createWebSocketBackend(this.url);
+      if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
+        this.socket = $websocketBackend.createWebSocketBackend(this.url, this.protocol);
         this.socket.onopen = this._onOpenHandler.bind(this);
         this.socket.onmessage = this._onMessageHandler.bind(this);
         this.socket.onerror = this._onErrorHandler.bind(this);
@@ -98,7 +99,7 @@
     };
 
     $WebSocket.prototype.fireQueue = function () {
-      while (this.sendQueue.length && this.socket.readyState === 1) {
+      while (this.sendQueue.length && this.socket.readyState === this._readyStateConstants.OPEN) {
         var data = this.sendQueue.shift();
 
         this.socket.send(
@@ -114,9 +115,9 @@
       }
     };
 
-    $WebSocket.prototype.notifyCloseCallbacks = function () {
+    $WebSocket.prototype.notifyCloseCallbacks = function (event) {
       for (var i = 0; i < this.onCloseCallbacks.length; i++) {
-        this.onCloseCallbacks[i].call(this);
+        this.onCloseCallbacks[i].call(this, event);
       }
     };
     $WebSocket.prototype.notifyErrorCallbacks = function (event) {
@@ -124,6 +125,22 @@
         this.onErrorCallbacks[i].call(this, event);
       }
     };
+
+    $WebSocket.prototype.onOpen = function (cb) {
+      this.onOpenCallbacks.push(cb);
+      return this;
+    };
+
+    $WebSocket.prototype.onClose = function (cb) {
+      this.onCloseCallbacks.push(cb);
+      return this;
+    };
+
+    $WebSocket.prototype.onError = function (cb) {
+      this.onErrorCallbacks.push(cb);
+      return this;
+    };
+
 
     $WebSocket.prototype.onMessage = function (callback, options) {
       if (!isFunction(callback)) {
@@ -136,9 +153,27 @@
 
       this.onMessageCallbacks.push({
         fn: callback,
-        pattern: options? options.filter : undefined,
-        autoApply: options? options.autoApply : true
+        pattern: options ? options.filter : undefined,
+        autoApply: options ? options.autoApply : true
       });
+      return this;
+    };
+
+    $WebSocket.prototype._onOpenHandler = function () {
+      this._reconnectAttempts = 0;
+      this.notifyOpenCallbacks();
+      this.fireQueue();
+    };
+
+    $WebSocket.prototype._onCloseHandler = function (event) {
+      this.notifyCloseCallbacks(event);
+      if (this._reconnectableStatusCodes.indexOf(event.code) > -1) {
+        this.reconnect();
+      }
+    };
+
+    $WebSocket.prototype._onErrorHandler = function (event) {
+      this.notifyErrorCallbacks(event);
     };
 
     $WebSocket.prototype._onMessageHandler = function (message) {
@@ -162,35 +197,6 @@
           currentCallback.fn.call(this, message);
           safeDigest(currentCallback.autoApply);
         }
-      }
-    };
-
-    $WebSocket.prototype.onClose = function (cb) {
-      this.onCloseCallbacks.push(cb);
-    };
-
-    $WebSocket.prototype.onOpen = function (cb) {
-      this.onOpenCallbacks.push(cb);
-    };
-
-    $WebSocket.prototype._onOpenHandler = function () {
-      this._reconnectAttempts = 0;
-      this.notifyOpenCallbacks();
-      this.fireQueue();
-    }
-    ;
-    $WebSocket.prototype.onError = function (cb) {
-      this.onErrorCallbacks.push(cb);
-    };
-
-    $WebSocket.prototype._onErrorHandler = function (event) {
-      this.notifyErrorCallbacks(event);
-    };
-
-    $WebSocket.prototype._onCloseHandler = function (event) {
-      this.notifyCloseCallbacks();
-      if (this._reconnectableStatusCodes.indexOf(event.code) > -1) {
-        this.reconnect();
       }
     };
 
@@ -236,6 +242,7 @@
         this._connect();
       }), this._getBackoffDelay(++this._reconnectAttempts), true);
 
+      return this;
     };
     // Exponential Backoff Formula by Prof. Douglas Thain
     // http://dthain.blogspot.co.uk/2009/02/exponential-backoff-in-distributed.html
@@ -276,8 +283,9 @@
         }
       });
     }
-    return function(url) {
-      return new $WebSocket(url);
+
+    return function(url, protocols) {
+      return new $WebSocket(url, protocols);
     };
   }
 
