@@ -16,8 +16,24 @@
       }
     }
 
-    function $WebSocket(url) {
-      this.url = url;
+    function $WebSocket(url, options) {
+      // var bits = url.split('/');
+
+      var protocols = options && options.protocols;
+      if (isString(options) || isArray(options)) {
+        protocols = options;
+      }
+
+      this.protocols = protocols || 'Sec-WebSocket-Protocol';
+      this.url = url || 'Missing URL';
+      this.ssl = /(wss)/i.test(this.url);
+
+      // this.binaryType = '';
+      // this.extensions = '';
+      // this.bufferedAmount = 0;
+      // this.trasnmitting = false;
+      // this.buffer = [];
+
       this._reconnectAttempts = 0;
       this.initialTimeout = 500; // 500ms
       this.maxTimeout = 5 * 60 * 1000; // 5 minutes
@@ -26,9 +42,14 @@
       this.onMessageCallbacks = [];
       this.onErrorCallbacks = [];
       this.onCloseCallbacks = [];
+
       objectFreeze(this._readyStateConstants);
 
-      this._connect();
+      if (url) {
+        this._connect();
+      } else {
+        this._setInternalState(0);
+      }
     }
 
     $WebSocket.prototype._readyStateConstants = {
