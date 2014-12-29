@@ -115,10 +115,10 @@ expectSend                     | msg:String | Expectation of send to be called, 
 verifyNoOutstandingExpectation |            | Makes sure all expectations have been satisfied, should be called in afterEach
 verifyNoOutstandingRequest     |            | Makes sure no requests are pending, should be called in afterEach
 
-## Logical Questions
+## Frequently asked questions
 
  * *Q.*: What if the browser doesn't support WebSockets?
- * *A.*: This module will not help; it does not have a fallback story for browsers that do not support WebSockets. Please check your browser target support [here](http://caniuse.com/#feat=websockets)
+ * *A.*: This module will not help; it does not have a fallback story for browsers that do not support WebSockets. Please check your browser target support [here](http://caniuse.com/#feat=websockets) and to include fallback support.
 
 ## Development
 
