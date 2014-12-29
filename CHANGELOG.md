@@ -21,6 +21,7 @@ Features:
   - Upgrade tests from Jasmine 1.3 to 2.0
   - Update build 
   - Include Karma for tests
+  - Use ngSocket as base
 
 ## 0.0.5
   - Initial release
