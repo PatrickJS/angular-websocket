@@ -22,3 +22,8 @@ echo
 echo "dist/angular-websocket.min.js"
 echo "dist/angular-websocket.min.js.map"
 echo
+
+cp dist/* .
+
+echo "Copy dist to root"
+echo
