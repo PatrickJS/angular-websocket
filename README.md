@@ -1,4 +1,5 @@
-# angular-websocket [![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png)](https://travis-ci.org/gdi2290/angular-websocket) [![Dependency Status](https://david-dm.org/gdi2290/angular-websocket.svg)](https://david-dm.org/gdi2290/angular-websocket) [![devDependency Status](https://david-dm.org/gdi2290/angular-websocket/dev-status.svg)](https://david-dm.org/gdi2290/angular-websocket#info=devDependencies)
+# angular-websocket
+[![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png)](https://travis-ci.org/gdi2290/angular-websocket) [![Dependency Status](https://david-dm.org/gdi2290/angular-websocket.svg)](https://david-dm.org/gdi2290/angular-websocket) [![npm version](https://badge.fury.io/js/angular-websocket.svg)](http://badge.fury.io/js/angular-websocket) [![devDependency Status](https://david-dm.org/gdi2290/angular-websocket/dev-status.svg)](https://david-dm.org/gdi2290/angular-websocket#info=devDependencies)
 
 ## Status: Looking for feedback about new API changes
 
