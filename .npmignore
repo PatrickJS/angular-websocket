@@ -1,0 +1,17 @@
+.bowerrc
+.gitignore
+.jshintignore
+.jshintrc
+.DS_Store
+**/.*
+*.yml
+*.xml
+karma.conf.js
+test.sh
+dist.sh
+bower.json
+src/
+example/
+test/
+bower_components/
+npm-debug.log
