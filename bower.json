@@ -3,6 +3,21 @@
   "version": "1.0.3",
   "homepage": "https://github.com/gdi2290/angular-websocket",
   "description": "An AngularJS 1.x WebSocket service for connecting client applications to servers.",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "javascript",
+    "realtime",
+    "websockets",
+    "websocket",
+    "angular-websocket",
+    "angular-websockets",
+    "angular-socket",
+    "ngWebSocket",
+    "ngWebSockets",
+    "gdi2290",
+    "PatrickJS"
+  ],
   "authors": [
     "gdi2290 <github@gdi2290.com>"
   ],
