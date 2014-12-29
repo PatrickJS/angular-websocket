@@ -5,6 +5,10 @@
   "description": "WebSocket service for Angular.js",
   "homepage": "https://github.com/gdi2290/angular-websocket",
   "bugs": "https://github.com/gdi2290/angular-websocket/issues",
+  "scripts": {
+    "test": "./test.sh",
+    "dist": "./dist.sh"
+  },
   "author": {
     "name": "Patrick Stapleton",
     "email": "patrick@gdi2290.com",
@@ -19,8 +23,7 @@
       "type": "MIT"
     }
   ],
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "http-server": "^0.6.1",
     "karma": "^0.12.28",
@@ -33,6 +36,7 @@
     "karma-script-launcher": "~0.1.0",
     "karma-slimerjs-launcher": "^0.1.2",
     "requirejs": "~2.1.10",
+    "uglify-js": "^2.4.16",
     "ws": "^0.4.32"
   }
 }
