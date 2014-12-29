@@ -283,14 +283,24 @@
 
   $WebSocketBackend.$inject = ['$window'];
   function $WebSocketBackend($window) {
-  this.createWebSocketBackend = function (url) {
+    this.createWebSocketBackend = function (url, protocols) {
       var match = /wss?:\/\//.exec(url);
-
+      var Socket, ws;
       if (!match) {
         throw new Error('Invalid url provided');
       }
+      if (typeof exports === 'object' && require) {
+        try {
+          ws = require('ws');
+          Socket = (ws.Client || ws.client || ws);
+        } catch(e) {}
+      }
+      Socket = Socket || $window.WebSocket || $window.MozWebSocket;
 
-      return new $window.WebSocket(url);
+      if (protocols) {
+        return new Socket(url, protocols);
+      }
+      return new Socket(url);
     };
   }
 
