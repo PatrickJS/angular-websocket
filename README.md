@@ -1,6 +1,6 @@
-# $webSocket [![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png)](https://travis-ci.org/gdi2290/angular-websocket)
+# angular-websocket [![Build Status](https://travis-ci.org/gdi2290/angular-websocket.png)](https://travis-ci.org/gdi2290/angular-websocket)
 
-## Status: In-Development
+## Status: Looking for feedback about new API changes
 
 An AngularJS 1.x WebSocket service for connecting client applications to servers.
 
@@ -56,7 +56,7 @@ You can download angular-websocket by:
 
 ### Factory: `$webSocket` (in module `ngWebSocket`)
 
-returns instance of NGWebSocket
+returns instance of $WebSocket
 
 ### Methods
 
