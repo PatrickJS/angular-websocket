@@ -14,7 +14,8 @@ module.exports = function(config) {
     files: [
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
-      'src/angular-websocket.js',
+      'dist/angular-websocket.min.js',
+      // 'src/angular-websocket.js',
       'src/angular-websocket-mock.js',
       'test/angular-websocket.spec.js'
     ],
