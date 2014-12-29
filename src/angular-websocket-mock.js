@@ -9,7 +9,9 @@
     var pendingSends = [];
 
 
-    function $MockWebSocket(url) {
+    function $MockWebSocket(url, protocols) {
+      this.protocols = protocols || 'Sec-WebSocket-Protocol';
+      this.ssl = /(wss)/i.test(this.url);
 
     }
 
@@ -22,19 +24,28 @@
     };
 
 
-    this.createWebSocketBackend = function (url) {
+    this.createWebSocketBackend = function (url, protocols) {
       pendingConnects.push(url);
+      // pendingConnects.push({
+      //   url: url,
+      //   protocols: protocols
+      // });
 
+      if (protocols) {
+        return new $MockWebSocket(url, protocols);
+      }
       return new $MockWebSocket(url);
     };
 
     this.flush = function () {
-      var url, msg;
+      var url, msg, config;
       while (url = pendingConnects.shift()) {
         var i = connectQueue.indexOf(url);
         if (i > -1) {
           connectQueue.splice(i, 1);
         }
+        // if (config && config.url) {
+        // }
       }
 
       while (pendingCloses.shift()) {
@@ -55,8 +66,9 @@
       }
     };
 
-    this.expectConnect = function (url) {
+    this.expectConnect = function (url, protocols) {
       connectQueue.push(url);
+      // connectQueue.push({url: url, protocols: protocols});
     };
 
     this.expectClose = function () {
