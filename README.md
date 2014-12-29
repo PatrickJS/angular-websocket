@@ -31,7 +31,7 @@ You can download angular-websocket by:
   </section>
   <script>
     angular.module('YOUR_APP', [
-      'ngWebsocket'
+      'ngWebSocket'
     ])
     .factory('MyData', function($websocket) {
       // Open a WebSocket connection
