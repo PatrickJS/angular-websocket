@@ -1,6 +1,6 @@
 describe('$webSocket', function() {
   describe('$webSocketBackend', function() {
-    var $window, $webSocket, WSMock, $webSocketBackend, localMocks = {};
+    var $window, $webSocket, $webSocketBackend, WSMock, localMocks = {};
 
     beforeEach(module('ngWebSocket'));
 
@@ -12,10 +12,10 @@ describe('$webSocket', function() {
       localMocks.sendMock = function() {};
       localMocks.closeMock = function() {};
 
-      function WSMock(url) {
+      WSMock = function(url) {
         this.send = localMocks.sendMock;
         this.close = localMocks.closeMock;
-      }
+      };
 
       $window.WebSocket = WSMock;
 
@@ -26,13 +26,14 @@ describe('$webSocket', function() {
       expect(function() {
         $webSocketBackend.createWebSocketBackend('%foobar/baz');
       })
-      .toThrow(new Error('Invalid url provided'));
+      .toThrowError('Invalid url provided');
     });
+
   });
 
 
   describe('$webSocket', function() {
-    var $window, $webSocket, WSMock, $webSocketBackend, localMocks = {};
+    var $window, $webSocket, $webSocketBackend, WSMock, localMocks = {};
 
     beforeEach(module('ngWebSocket', 'ngWebSocketMock'));
 
@@ -40,6 +41,16 @@ describe('$webSocket', function() {
       $window = _$window_;
       $webSocket = _$webSocket_;
       $webSocketBackend = _$webSocketBackend_;
+
+      localMocks.sendMock = function() {};
+      localMocks.closeMock = function() {};
+
+      WSMock = function(url) {
+        this.send = localMocks.sendMock;
+        this.close = localMocks.closeMock;
+      };
+
+      $window.WebSocket = WSMock;
     }));
 
     afterEach(function() {
@@ -322,7 +333,7 @@ describe('$webSocket', function() {
 
 
       it('should complain if not given a function', function() {
-        expect(function() {ws.onMessage('lol');}).toThrow(new Error('Callback must be a function'));
+        expect(function() {ws.onMessage('lol');}).toThrowError('Callback must be a function');
       });
 
 
@@ -339,7 +350,7 @@ describe('$webSocket', function() {
       it('should complain if the filter option is anything but RegEx or string', function() {
         expect(function() {
           ws.onMessage(fn, { filter: 5 });
-        }).toThrow(new Error('Pattern must be a string or regular expression'));
+        }).toThrowError('Pattern must be a string or regular expression');
       });
 
 
@@ -550,7 +561,7 @@ describe('$webSocket', function() {
       it('should complain if I try to set the readyState', function() {
         expect(function() {
           ws.readyState = 5;
-        }).toThrow(new Error('The readyState property is read-only'));
+        }).toThrowError('The readyState property is read-only');
       });
 
 
