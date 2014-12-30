@@ -150,6 +150,7 @@ In the project root directory open `index.html` in the example folder
  * Add .bindToScope method
  * Add .on(event) 
  * Include more examples of patterns for realtime Angular apps
+ * Allow for optional configuration object in $websocket constructor
 
 ## License
 [MIT](https://github.com/gdi2290/angular-websocket/blob/master/LICENSE)
