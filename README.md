@@ -147,6 +147,8 @@ In the project root directory open `index.html` in the example folder
  * Allow JSON if object is sent
  * Allow more control over $digest cycle per WebSocket instance
  * Add socket.io support
+ * Add Faye support
+ * Add SockJS support
  * Add .bindToScope method
  * Add .on(event) 
  * Include more examples of patterns for realtime Angular apps
