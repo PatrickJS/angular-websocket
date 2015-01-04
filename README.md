@@ -4,7 +4,7 @@
 [![npm](https://img.shields.io/npm/v/angular-websocket.svg?style=flat)](https://www.npmjs.com/package/angular-websocket)
 [![Dependency Status](https://david-dm.org/gdi2290/angular-websocket.svg)](https://david-dm.org/gdi2290/angular-websocket)
 [![devDependency Status](https://david-dm.org/gdi2290/angular-websocket/dev-status.svg)](https://david-dm.org/gdi2290/angular-websocket#info=devDependencies)
-[![NPM](https://nodei.co/npm-dl/angular-websocket.png)](https://nodei.co/npm/angular-websocket/)
+[![NPM](https://nodei.co/npm/angular-websocket.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/angular-websocket/)
 
 ### Status: Looking for feedback about new API changes
 
