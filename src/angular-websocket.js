@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   var noop = function() {};
   var objectFreeze = (Object.freeze) ? Object.freeze : noop;
