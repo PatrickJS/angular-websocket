@@ -33,7 +33,7 @@
         // internal IsCallable function
         throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
       }
-  
+
       var aArgs   = arraySlice.call(arguments, 1),
           fToBind = this,
           fNOP    = function() {},
@@ -43,14 +43,14 @@
                    : oThis,
                    aArgs.concat(arraySlice.call(arguments)));
           };
-  
+
       fNOP.prototype = this.prototype;
       fBound.prototype = new fNOP();
-  
+
       return fBound;
     };
   }
-  
+
   $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
@@ -117,7 +117,7 @@
 
     $WebSocket.prototype._connect = function (force) {
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
-        this.socket = $websocketBackend.createWebSocketBackend(this.url, this.protocol);
+        this.socket = $websocketBackend.createWebSocketBackend(this.url, this.protocols);
         this.socket.onopen = this._onOpenHandler.bind(this);
         this.socket.onmessage = this._onMessageHandler.bind(this);
         this.socket.onerror = this._onErrorHandler.bind(this);
