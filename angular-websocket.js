@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   var noop = function() {};
   var objectFreeze = (Object.freeze) ? Object.freeze : noop;
@@ -6,6 +7,7 @@
   var isString = angular.isString;
   var isFunction = angular.isFunction;
   var isDefined = angular.isDefined;
+  var arraySlice = Array.prototype.slice;
   var isArray = angular.isArray;
   // ie8 wat
   if (!Array.prototype.indexOf) {
@@ -31,20 +33,20 @@
         // internal IsCallable function
         throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
       }
-  
-      var aArgs   = Array.prototype.slice.call(arguments, 1),
+
+      var aArgs   = arraySlice.call(arguments, 1),
           fToBind = this,
           fNOP    = function() {},
           fBound  = function() {
             return fToBind.apply(this instanceof fNOP && oThis
                    ? this
                    : oThis,
-                   aArgs.concat(Array.prototype.slice.call(arguments)));
+                   aArgs.concat(arraySlice.call(arguments)));
           };
-  
+
       fNOP.prototype = this.prototype;
       fBound.prototype = new fNOP();
-  
+
       return fBound;
     };
   }
@@ -115,7 +117,7 @@
 
     $WebSocket.prototype._connect = function (force) {
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
-        this.socket = $websocketBackend.createWebSocketBackend(this.url, this.protocol);
+        this.socket = $websocketBackend.createWebSocketBackend(this.url, this.protocols);
         this.socket.onopen = this._onOpenHandler.bind(this);
         this.socket.onmessage = this._onMessageHandler.bind(this);
         this.socket.onerror = this._onErrorHandler.bind(this);

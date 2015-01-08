@@ -1,3 +1,12 @@
+## 1.0.6 (2015-1-7)
+
+Features:
+  - Include onErrorCallbacks docs
+  - Include onCloseCallbacks docs
+
+Bugfixes:
+  - Typo in _connect()
+
 ## 1.0.5 (2014-12-29)
 
 Features:
