@@ -146,6 +146,7 @@ In the project root directory open `index.html` in the example folder
 
 
 ## TODO
+ * Decouple $WebSocketProvider from $WebSocket
  * Allow JSON if object is sent
  * Allow more control over $digest cycle per WebSocket instance
  * Add socket.io support
