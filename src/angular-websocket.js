@@ -51,7 +51,7 @@
     };
   }
 
-  $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
+  // $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
     function safeDigest(autoApply) {
@@ -316,7 +316,7 @@
     };
   }
 
-  $WebSocketBackend.$inject = ['$window'];
+  // $WebSocketBackend.$inject = ['$window'];
   function $WebSocketBackend($window) {
     this.createWebSocketBackend = function (url, protocols) {
       var match = /wss?:\/\//.exec(url);
@@ -340,10 +340,10 @@
   }
 
   angular.module('ngWebSocket', [])
-  .factory('$websocket', $WebSocketProvider)
-  .factory('WebSocket',  $WebSocketProvider)
-  .service('$websocketBackend', $WebSocketBackend)
-  .service('WebSocketBackend', $WebSocketBackend);
+  .factory('$websocket', ['$rootScope', '$q', '$timeout', '$websocketBackend', $WebSocketProvider])
+  .factory('WebSocket',  ['$rootScope', '$q', '$timeout', 'WebsocketBackend',  $WebSocketProvider])
+  .service('$websocketBackend', ['$window', $WebSocketBackend])
+  .service('WebSocketBackend',  ['$window', $WebSocketBackend]);
 
 
   angular.module('angular-websocket', ['ngWebSocket']);
