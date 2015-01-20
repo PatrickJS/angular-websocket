@@ -96,12 +96,6 @@
 
     }
 
-    $WebSocket.prototype.safeDigest = function safeDigest(autoApply) {
-      if (autoApply && !this.scope.$$phase) {
-        this.scope.$digest();
-      }
-    };
-
     $WebSocket.prototype._readyStateConstants = {
       'CONNECTING': 0,
       'OPEN': 1,
@@ -117,6 +111,20 @@
     $WebSocket.prototype.close = function (force) {
       if (force || !this.socket.bufferedAmount) {
         this.socket.close();
+    $WebSocket.prototype.safeDigest = function safeDigest(autoApply) {
+      if (autoApply && !this.scope.$$phase) {
+        this.scope.$digest();
+      }
+    };
+
+    $WebSocket.prototype.bindToScope = function bindToScope(scope) {
+      if (scope) {
+        this.scope = scope;
+        if (this.rootScopeFailover) {
+          this.scope.$on('$destroy', function() {
+            this.scope = $rootScope;
+          });
+        }
       }
       return this;
     };
