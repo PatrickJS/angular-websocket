@@ -25,7 +25,7 @@ describe('angular-websocket', function() {
 
     it('should complain if not given a valid url', function() {
       expect(function() {
-        $websocketBackend.createWebSocketBackend('%foobar/baz');
+        $websocketBackend.create('%foobar/baz');
       })
       .toThrowError('Invalid url provided');
     });

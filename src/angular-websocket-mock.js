@@ -24,8 +24,7 @@
       pendingCloses.push(true);
     };
 
-
-    this.createWebSocketBackend = function (url, protocols) {
+    function createWebSocketBackend(url, protocols) {
       pendingConnects.push(url);
       // pendingConnects.push({
       //   url: url,
@@ -36,7 +35,9 @@
         return new $MockWebSocket(url, protocols);
       }
       return new $MockWebSocket(url);
-    };
+    }
+    this.create = createWebSocketBackend;
+    this.createWebSocketBackend = createWebSocketBackend;
 
     this.flush = function () {
       var url, msg, config;

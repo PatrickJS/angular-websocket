@@ -311,34 +311,43 @@
     };
   }
 
-  // $WebSocketBackend.$inject = ['$window'];
-  function $WebSocketBackend($window) {
-    this.createWebSocketBackend = function (url, protocols) {
+  // $WebSocketBackendProvider.$inject = ['$window'];
+  function $WebSocketBackendProvider($window, $log) {
+    this.create = function create(url, protocols) {
       var match = /wss?:\/\//.exec(url);
       var Socket, ws;
       if (!match) {
         throw new Error('Invalid url provided');
       }
+
+      // CommonJS
       if (typeof exports === 'object' && require) {
         try {
           ws = require('ws');
           Socket = (ws.Client || ws.client || ws);
         } catch(e) {}
       }
+
+      // Browser
       Socket = Socket || $window.WebSocket || $window.MozWebSocket;
 
       if (protocols) {
         return new Socket(url, protocols);
       }
+
       return new Socket(url);
+    };
+    this.createWebSocketBackend = function createWebSocketBackend(url, protocols) {
+      $log.warn('Deprecated: Please use .create(url, protocols)');
+      return this.create(url, protocols);
     };
   }
 
   angular.module('ngWebSocket', [])
   .factory('$websocket', ['$rootScope', '$q', '$timeout', '$websocketBackend', $WebSocketProvider])
   .factory('WebSocket',  ['$rootScope', '$q', '$timeout', 'WebsocketBackend',  $WebSocketProvider])
-  .service('$websocketBackend', ['$window', $WebSocketBackend])
-  .service('WebSocketBackend',  ['$window', $WebSocketBackend]);
+  .service('$websocketBackend', ['$window', '$log', $WebSocketBackendProvider])
+  .service('WebSocketBackend',  ['$window', '$log', $WebSocketBackendProvider]);
 
 
   angular.module('angular-websocket', ['ngWebSocket']);
