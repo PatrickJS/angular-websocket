@@ -1,3 +1,15 @@
+## 1.0.7 (2015-1-20)
+
+Features:
+  - Named functions for debugging
+  - Add .bindToScope() and expose .safeDigest() with scope/rootScopeFailover option
+
+Bugfixes:
+  - Remove default protocol
+
+Deprecated:
+  - Change $WebSocketBackend.createWebSocketBackend -> $WebSocketBackend.create
+
 ## 1.0.6 (2015-1-7)
 
 Features:
