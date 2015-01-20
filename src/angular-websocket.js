@@ -60,15 +60,10 @@
       }
     }
 
-    function $WebSocket(url, options) {
+    function $WebSocket(url, protocols) {
       // var bits = url.split('/');
 
-      var protocols = options && options.protocols;
-      if (isString(options) || isArray(options)) {
-        protocols = options;
-      }
-
-      this.protocols = protocols || 'Sec-WebSocket-Protocol';
+      this.protocols = protocols;
       this.url = url || 'Missing URL';
       this.ssl = /(wss)/i.test(this.url);
 

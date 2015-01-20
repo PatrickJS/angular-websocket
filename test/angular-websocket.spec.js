@@ -79,7 +79,7 @@ describe('angular-websocket', function() {
       var url2 = 'ws://foo/secure';
       $websocketBackend.expectConnect(url2);
       var ws2 = $websocket(url2);
-      expect(ws2.protocols).toEqual('Sec-WebSocket-Protocol');
+      expect(ws2.protocols).toEqual(undefined);
 
       var url3 = 'ws://foo/secure';
       var protocols3 = ['Swag-Protocol', 'Sec-WebSocket-Protocol'];
