@@ -146,17 +146,15 @@ In the project root directory open `index.html` in the example folder
 
 
 ## TODO
- * Decouple $WebSocketProvider from $WebSocket
  * Allow JSON if object is sent
  * Allow more control over $digest cycle per WebSocket instance
+ * Add .on(event)
+ * Include more examples of patterns for realtime Angular apps
+ * Allow for optional configuration object in $websocket constructor
  * Add socket.io support
  * Add SockJS support
  * Add Faye support
  * Add PubNub support
- * Add .bindToScope method
- * Add .on(event)
- * Include more examples of patterns for realtime Angular apps
- * Allow for optional configuration object in $websocket constructor
 
 ## License
 [MIT](https://github.com/gdi2290/angular-websocket/blob/master/LICENSE)
