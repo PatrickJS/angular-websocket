@@ -54,14 +54,13 @@
   // $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
-    function safeDigest(autoApply) {
-      if (autoApply && !$rootScope.$$phase) {
-        $rootScope.$apply();
-      }
-    }
-
-    function $WebSocket(url, protocols) {
+    function $WebSocket(url, protocols, options) {
       // var bits = url.split('/');
+
+      if (!options && isObject(protocols) && !isArray(protocols)) {
+        options = protocols;
+        protocols = undefined;
+      }
 
       this.protocols = protocols;
       this.url = url || 'Missing URL';
@@ -73,16 +72,19 @@
       // this.trasnmitting = false;
       // this.buffer = [];
 
-      this._reconnectAttempts = 0;
-      this.initialTimeout = 500; // 500ms
-      this.maxTimeout = 5 * 60 * 1000; // 5 minutes
-      this.sendQueue = [];
-      this.onOpenCallbacks = [];
+      // TODO: refactor options to use isDefined
       this.scope              = options && options.scope             || $rootScope;
       this.rootScopeFailover  = options && options.rootScopeFailover && true;
+      // this.useApplyAsync      = options && options.useApplyAsync     || false;
+      this._reconnectAttempts = options && options.reconnectAttempts || 0;
+      this.initialTimeout     = options && options.initialTimeout    || 500; // 500ms
+      this.maxTimeout         = options && options.maxTimeout        || 5 * 60 * 1000; // 5 minutes
+
+      this.sendQueue          = [];
+      this.onOpenCallbacks    = [];
       this.onMessageCallbacks = [];
-      this.onErrorCallbacks = [];
-      this.onCloseCallbacks = [];
+      this.onErrorCallbacks   = [];
+      this.onCloseCallbacks   = [];
 
       objectFreeze(this._readyStateConstants);
 
