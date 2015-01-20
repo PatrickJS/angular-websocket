@@ -78,6 +78,8 @@
       this.maxTimeout = 5 * 60 * 1000; // 5 minutes
       this.sendQueue = [];
       this.onOpenCallbacks = [];
+      this.scope              = options && options.scope             || $rootScope;
+      this.rootScopeFailover  = options && options.rootScopeFailover && true;
       this.onMessageCallbacks = [];
       this.onErrorCallbacks = [];
       this.onCloseCallbacks = [];
@@ -89,7 +91,14 @@
       } else {
         this._setInternalState(0);
       }
+
     }
+
+    $WebSocket.prototype.safeDigest = function safeDigest(autoApply) {
+      if (autoApply && !this.scope.$$phase) {
+        this.scope.$digest();
+      }
+    };
 
     $WebSocket.prototype._readyStateConstants = {
       'CONNECTING': 0,
@@ -203,16 +212,18 @@
       var socket = this;
       var currentCallback;
       for (var i = 0; i < socket.onMessageCallbacks.length; i++) {
-        currentCallback = socket.onMessageCallbacks[i];
+      for (var i = 0; i < socketInstance.onMessageCallbacks.length; i++) {
+        currentCallback = socketInstance.onMessageCallbacks[i];
         pattern = currentCallback.pattern;
         if (pattern) {
           if (isString(pattern) && message.data === pattern) {
-            currentCallback.fn.call(this, message);
-            safeDigest(currentCallback.autoApply);
+            currentCallback.fn.call(socketInstance, message);
+            socketInstance.safeDigest(currentCallback.autoApply);
           }
           else if (pattern instanceof RegExp && pattern.exec(message.data)) {
             currentCallback.fn.call(this, message);
-            safeDigest(currentCallback.autoApply);
+            currentCallback.fn.call(socketInstance, message);
+            socketInstance.safeDigest(currentCallback.autoApply);
           }
         }
         else {

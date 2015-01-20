@@ -1,14 +1,15 @@
 (function() {
   'use strict';
 
-  var noop = function() {};
-  var objectFreeze = (Object.freeze) ? Object.freeze : noop;
+  var noop = angular.noop;
+  var objectFreeze  = (Object.freeze) ? Object.freeze : noop;
   var objectDefineProperty = Object.defineProperty;
-  var isString = angular.isString;
+  var isString   = angular.isString;
   var isFunction = angular.isFunction;
-  var isDefined = angular.isDefined;
+  var isDefined  = angular.isDefined;
+  var isObject   = angular.isObject;
+  var isArray    = angular.isArray;
   var arraySlice = Array.prototype.slice;
-  var isArray = angular.isArray;
   // ie8 wat
   if (!Array.prototype.indexOf) {
     Array.prototype.indexOf = function(elt /*, from*/) {
@@ -36,39 +37,30 @@
 
       var aArgs   = arraySlice.call(arguments, 1),
           fToBind = this,
-          fNOP    = function() {},
+          FNOP    = function() {},
           fBound  = function() {
-            return fToBind.apply(this instanceof fNOP && oThis
-                   ? this
-                   : oThis,
-                   aArgs.concat(arraySlice.call(arguments)));
+            return fToBind.apply(this instanceof FNOP && oThis ? this : oThis, aArgs.concat(arraySlice.call(arguments)));
           };
 
-      fNOP.prototype = this.prototype;
-      fBound.prototype = new fNOP();
+      FNOP.prototype = this.prototype;
+      fBound.prototype = new FNOP();
 
       return fBound;
     };
   }
 
-  $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
+  // $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
-    function safeDigest(autoApply) {
-      if (autoApply && !$rootScope.$$phase) {
-        $rootScope.$apply();
-      }
-    }
-
-    function $WebSocket(url, options) {
+    function $WebSocket(url, protocols, options) {
       // var bits = url.split('/');
 
-      var protocols = options && options.protocols;
-      if (isString(options) || isArray(options)) {
-        protocols = options;
+      if (!options && isObject(protocols) && !isArray(protocols)) {
+        options = protocols;
+        protocols = undefined;
       }
 
-      this.protocols = protocols || 'Sec-WebSocket-Protocol';
+      this.protocols = protocols;
       this.url = url || 'Missing URL';
       this.ssl = /(wss)/i.test(this.url);
 
@@ -78,14 +70,19 @@
       // this.trasnmitting = false;
       // this.buffer = [];
 
-      this._reconnectAttempts = 0;
-      this.initialTimeout = 500; // 500ms
-      this.maxTimeout = 5 * 60 * 1000; // 5 minutes
-      this.sendQueue = [];
-      this.onOpenCallbacks = [];
+      // TODO: refactor options to use isDefined
+      this.scope              = options && options.scope             || $rootScope;
+      this.rootScopeFailover  = options && options.rootScopeFailover && true;
+      // this.useApplyAsync      = options && options.useApplyAsync     || false;
+      this._reconnectAttempts = options && options.reconnectAttempts || 0;
+      this.initialTimeout     = options && options.initialTimeout    || 500; // 500ms
+      this.maxTimeout         = options && options.maxTimeout        || 5 * 60 * 1000; // 5 minutes
+
+      this.sendQueue          = [];
+      this.onOpenCallbacks    = [];
       this.onMessageCallbacks = [];
-      this.onErrorCallbacks = [];
-      this.onCloseCallbacks = [];
+      this.onErrorCallbacks   = [];
+      this.onCloseCallbacks   = [];
 
       objectFreeze(this._readyStateConstants);
 
@@ -94,7 +91,14 @@
       } else {
         this._setInternalState(0);
       }
+
     }
+
+    $WebSocket.prototype.safeDigest = function safeDigest(autoApply) {
+      if (autoApply && !this.scope.$$phase) {
+        this.scope.$digest();
+      }
+    };
 
     $WebSocket.prototype._readyStateConstants = {
       'CONNECTING': 0,
@@ -108,16 +112,28 @@
       4000
     ];
 
-    $WebSocket.prototype.close = function (force) {
+    $WebSocket.prototype.close = function close(force) {
       if (force || !this.socket.bufferedAmount) {
         this.socket.close();
       }
       return this;
     };
 
-    $WebSocket.prototype._connect = function (force) {
+    $WebSocket.prototype.bindToScope = function bindToScope(scope) {
+      if (scope) {
+        this.scope = scope;
+        if (this.rootScopeFailover) {
+          this.scope.$on('$destroy', function() {
+            this.scope = $rootScope;
+          });
+        }
+      }
+      return this;
+    };
+
+    $WebSocket.prototype._connect = function _connect(force) {
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
-        this.socket = $websocketBackend.createWebSocketBackend(this.url, this.protocols);
+        this.socket = $websocketBackend.create(this.url, this.protocols);
         this.socket.onopen = this._onOpenHandler.bind(this);
         this.socket.onmessage = this._onMessageHandler.bind(this);
         this.socket.onerror = this._onErrorHandler.bind(this);
@@ -125,7 +141,7 @@
       }
     };
 
-    $WebSocket.prototype.fireQueue = function () {
+    $WebSocket.prototype.fireQueue = function fireQueue() {
       while (this.sendQueue.length && this.socket.readyState === this._readyStateConstants.OPEN) {
         var data = this.sendQueue.shift();
 
@@ -136,40 +152,41 @@
       }
     };
 
-    $WebSocket.prototype.notifyOpenCallbacks = function () {
+    $WebSocket.prototype.notifyOpenCallbacks = function notifyOpenCallbacks() {
       for (var i = 0; i < this.onOpenCallbacks.length; i++) {
         this.onOpenCallbacks[i].call(this);
       }
     };
 
-    $WebSocket.prototype.notifyCloseCallbacks = function (event) {
+    $WebSocket.prototype.notifyCloseCallbacks = function notifyCloseCallbacks(event) {
       for (var i = 0; i < this.onCloseCallbacks.length; i++) {
         this.onCloseCallbacks[i].call(this, event);
       }
     };
-    $WebSocket.prototype.notifyErrorCallbacks = function (event) {
+
+    $WebSocket.prototype.notifyErrorCallbacks = function notifyErrorCallbacks(event) {
       for (var i = 0; i < this.onErrorCallbacks.length; i++) {
         this.onErrorCallbacks[i].call(this, event);
       }
     };
 
-    $WebSocket.prototype.onOpen = function (cb) {
+    $WebSocket.prototype.onOpen = function onOpen(cb) {
       this.onOpenCallbacks.push(cb);
       return this;
     };
 
-    $WebSocket.prototype.onClose = function (cb) {
+    $WebSocket.prototype.onClose = function onClose(cb) {
       this.onCloseCallbacks.push(cb);
       return this;
     };
 
-    $WebSocket.prototype.onError = function (cb) {
+    $WebSocket.prototype.onError = function onError(cb) {
       this.onErrorCallbacks.push(cb);
       return this;
     };
 
 
-    $WebSocket.prototype.onMessage = function (callback, options) {
+    $WebSocket.prototype.onMessage = function onMessage(callback, options) {
       if (!isFunction(callback)) {
         throw new Error('Callback must be a function');
       }
@@ -186,61 +203,61 @@
       return this;
     };
 
-    $WebSocket.prototype._onOpenHandler = function () {
+    $WebSocket.prototype._onOpenHandler = function _onOpenHandler() {
       this._reconnectAttempts = 0;
       this.notifyOpenCallbacks();
       this.fireQueue();
     };
 
-    $WebSocket.prototype._onCloseHandler = function (event) {
+    $WebSocket.prototype._onCloseHandler = function _onCloseHandler(event) {
       this.notifyCloseCallbacks(event);
       if (this._reconnectableStatusCodes.indexOf(event.code) > -1) {
         this.reconnect();
       }
     };
 
-    $WebSocket.prototype._onErrorHandler = function (event) {
+    $WebSocket.prototype._onErrorHandler = function _onErrorHandler(event) {
       this.notifyErrorCallbacks(event);
     };
 
-    $WebSocket.prototype._onMessageHandler = function (message) {
+    $WebSocket.prototype._onMessageHandler = function _onMessageHandler(message) {
       var pattern;
-      var socket = this;
+      var socketInstance = this;
       var currentCallback;
-      for (var i = 0; i < socket.onMessageCallbacks.length; i++) {
-        currentCallback = socket.onMessageCallbacks[i];
+      for (var i = 0; i < socketInstance.onMessageCallbacks.length; i++) {
+        currentCallback = socketInstance.onMessageCallbacks[i];
         pattern = currentCallback.pattern;
         if (pattern) {
           if (isString(pattern) && message.data === pattern) {
-            currentCallback.fn.call(this, message);
-            safeDigest(currentCallback.autoApply);
+            currentCallback.fn.call(socketInstance, message);
+            socketInstance.safeDigest(currentCallback.autoApply);
           }
           else if (pattern instanceof RegExp && pattern.exec(message.data)) {
-            currentCallback.fn.call(this, message);
-            safeDigest(currentCallback.autoApply);
+            currentCallback.fn.call(socketInstance, message);
+            socketInstance.safeDigest(currentCallback.autoApply);
           }
         }
         else {
-          currentCallback.fn.call(this, message);
-          safeDigest(currentCallback.autoApply);
+          currentCallback.fn.call(socketInstance, message);
+          socketInstance.safeDigest(currentCallback.autoApply);
         }
       }
     };
 
-    $WebSocket.prototype.send = function (data) {
+    $WebSocket.prototype.send = function send(data) {
       var deferred = $q.defer();
-      var socket = this;
+      var socketInstance = this;
       var promise = cancelableify(deferred.promise);
 
-      if (socket.readyState === socket._readyStateConstants.RECONNECT_ABORTED) {
+      if (socketInstance.readyState === socketInstance._readyStateConstants.RECONNECT_ABORTED) {
         deferred.reject('Socket connection has been closed');
       }
       else {
-        this.sendQueue.push({
+        socketInstance.sendQueue.push({
           message: data,
           deferred: deferred
         });
-        this.fireQueue();
+        socketInstance.fireQueue();
       }
 
       // Credit goes to @btford
@@ -255,25 +272,25 @@
       }
 
       function cancel(reason) {
-        socket.sendQueue.splice(socket.sendQueue.indexOf(data), 1);
+        socketInstance.sendQueue.splice(socketInstance.sendQueue.indexOf(data), 1);
         deferred.reject(reason);
-        return this;
+        return socketInstance;
       }
 
       return promise;
     };
 
-    $WebSocket.prototype.reconnect = function () {
-      this.close();
-      $timeout(angular.bind(this, function() {
-        this._connect();
-      }), this._getBackoffDelay(++this._reconnectAttempts), true);
+    $WebSocket.prototype.reconnect = function reconnect() {
+      var socketInstance = this;
+      socketInstance.close();
 
-      return this;
+      $timeout(socketInstance._connect, socketInstance._getBackoffDelay(++socketInstance._reconnectAttempts));
+
+      return socketInstance;
     };
     // Exponential Backoff Formula by Prof. Douglas Thain
     // http://dthain.blogspot.co.uk/2009/02/exponential-backoff-in-distributed.html
-    $WebSocket.prototype._getBackoffDelay = function(attempt) {
+    $WebSocket.prototype._getBackoffDelay = function _getBackoffDelay(attempt) {
       var R = Math.random() + 1;
       var T = this.initialTimeout;
       var F = 2;
@@ -283,7 +300,7 @@
       return Math.floor(Math.min(R * T * Math.pow(F, N), M));
     };
 
-    $WebSocket.prototype._setInternalState = function(state) {
+    $WebSocket.prototype._setInternalState = function _setInternalState(state) {
       if (Math.floor(state) !== state || state < 0 || state > 4) {
         throw new Error('state must be an integer between 0 and 4, got: ' + state);
       }
@@ -300,6 +317,7 @@
       });
     };
 
+    // Read only .readyState
     if (objectDefineProperty) {
       objectDefineProperty($WebSocket.prototype, 'readyState', {
         get: function() {
@@ -316,34 +334,43 @@
     };
   }
 
-  $WebSocketBackend.$inject = ['$window'];
-  function $WebSocketBackend($window) {
-    this.createWebSocketBackend = function (url, protocols) {
+  // $WebSocketBackendProvider.$inject = ['$window'];
+  function $WebSocketBackendProvider($window, $log) {
+    this.create = function create(url, protocols) {
       var match = /wss?:\/\//.exec(url);
       var Socket, ws;
       if (!match) {
         throw new Error('Invalid url provided');
       }
+
+      // CommonJS
       if (typeof exports === 'object' && require) {
         try {
           ws = require('ws');
           Socket = (ws.Client || ws.client || ws);
         } catch(e) {}
       }
+
+      // Browser
       Socket = Socket || $window.WebSocket || $window.MozWebSocket;
 
       if (protocols) {
         return new Socket(url, protocols);
       }
+
       return new Socket(url);
+    };
+    this.createWebSocketBackend = function createWebSocketBackend(url, protocols) {
+      $log.warn('Deprecated: Please use .create(url, protocols)');
+      return this.create(url, protocols);
     };
   }
 
   angular.module('ngWebSocket', [])
-  .factory('$websocket', $WebSocketProvider)
-  .factory('WebSocket',  $WebSocketProvider)
-  .service('$websocketBackend', $WebSocketBackend)
-  .service('WebSocketBackend', $WebSocketBackend);
+  .factory('$websocket', ['$rootScope', '$q', '$timeout', '$websocketBackend', $WebSocketProvider])
+  .factory('WebSocket',  ['$rootScope', '$q', '$timeout', 'WebsocketBackend',  $WebSocketProvider])
+  .service('$websocketBackend', ['$window', '$log', $WebSocketBackendProvider])
+  .service('WebSocketBackend',  ['$window', '$log', $WebSocketBackendProvider]);
 
 
   angular.module('angular-websocket', ['ngWebSocket']);
