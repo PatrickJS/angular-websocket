@@ -41,7 +41,7 @@ You can download angular-websocket by:
 
       var collection = [];
 
-      dataStream.onMessage(function(message.data) {
+      dataStream.onMessage(function(message) {
         collection.push(JSON.parse(message.data));
       });
 
