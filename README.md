@@ -148,6 +148,7 @@ In the project root directory open `index.html` in the example folder
 ## TODO
  * Allow JSON if object is sent
  * Allow more control over $digest cycle per WebSocket instance
+ * Add Angular interceptors
  * Add .on(event)
  * Include more examples of patterns for realtime Angular apps
  * Allow for optional configuration object in $websocket constructor
