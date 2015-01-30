@@ -53,8 +53,6 @@
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
     function $WebSocket(url, protocols, options) {
-      // var bits = url.split('/');
-
       if (!options && isObject(protocols) && !isArray(protocols)) {
         options = protocols;
         protocols = undefined;
@@ -257,18 +255,18 @@
 
     $WebSocket.prototype.send = function send(data) {
       var deferred = $q.defer();
-      var socketInstance = this;
+      var self = this;
       var promise = cancelableify(deferred.promise);
 
-      if (socketInstance.readyState === socketInstance._readyStateConstants.RECONNECT_ABORTED) {
+      if (self.readyState === self._readyStateConstants.RECONNECT_ABORTED) {
         deferred.reject('Socket connection has been closed');
       }
       else {
-        socketInstance.sendQueue.push({
+        self.sendQueue.push({
           message: data,
           deferred: deferred
         });
-        socketInstance.fireQueue();
+        self.fireQueue();
       }
 
       // Credit goes to @btford
@@ -283,9 +281,9 @@
       }
 
       function cancel(reason) {
-        socketInstance.sendQueue.splice(socketInstance.sendQueue.indexOf(data), 1);
+        self.sendQueue.splice(self.sendQueue.indexOf(data), 1);
         deferred.reject(reason);
-        return socketInstance;
+        return self;
       }
 
       return promise;
@@ -344,7 +342,7 @@
     };
   }
 
-  // $WebSocketBackendProvider.$inject = ['$window'];
+  // $WebSocketBackendProvider.$inject = ['$window', '$log'];
   function $WebSocketBackendProvider($window, $log) {
     this.create = function create(url, protocols) {
       var match = /wss?:\/\//.exec(url);
