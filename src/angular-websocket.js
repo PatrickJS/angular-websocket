@@ -9,6 +9,7 @@
   var isDefined  = angular.isDefined;
   var isObject   = angular.isObject;
   var isArray    = angular.isArray;
+  var forEach    = angular.forEach;
   var arraySlice = Array.prototype.slice;
   // ie8 wat
   if (!Array.prototype.indexOf) {
@@ -320,7 +321,7 @@
       this._internalConnectionState = state;
 
 
-      angular.forEach(this.sendQueue, function(pending) {
+      forEach(this.sendQueue, function(pending) {
         pending.deferred.reject('Message cancelled due to closed socket connection');
       });
     };
