@@ -292,6 +292,60 @@ describe('angular-websocket', function() {
       }));
 
     });
+
+    describe('.bindToScope', function() {
+
+      it('should not bind to scope if no parameters are provided', inject(function($rootScope) {
+        // var digest = spyOn($rootScope, '$digest');
+
+        var url = 'ws://foo/bindToScope';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        expect(ws.scope).toBe($rootScope);
+        ws.bindToScope();
+        expect(ws.scope).toBe($rootScope);
+
+        $websocketBackend.flush();
+      }));
+
+      it('should bind to scope if a scope is provided', inject(function($rootScope) {
+        var isolateScope = $rootScope.$new(true);
+
+        var url = 'ws://foo/bindToScope';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        expect(ws.scope).toBe($rootScope);
+        ws.bindToScope(isolateScope);
+        expect(ws.scope).toBe(isolateScope);
+
+        $websocketBackend.flush();
+      }));
+
+      it('should bind to rootScope if a scope is provided and is destroyed', inject(function($rootScope) {
+        var isolateScope = $rootScope.$new(true);
+
+        var url = 'ws://foo/bindToScope';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        ws.rootScopeFailover = true;
+
+        expect(ws.scope).toBe($rootScope);
+        ws.bindToScope(isolateScope);
+        expect(ws.scope).toBe(isolateScope);
+
+        isolateScope.$destroy();
+
+        expect(ws.scope).toBe($rootScope);
+
+        $websocketBackend.flush();
+      }));
+
+
+    });
+
     describe('._onCloseHandler', function() {
       it('should call .reconnect if the CloseEvent indicates a non-intentional close', function() {
         var url = 'ws://foo/onclose';
