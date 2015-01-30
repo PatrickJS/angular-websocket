@@ -73,7 +73,7 @@
       // TODO: refactor options to use isDefined
       this.scope              = options && options.scope             || $rootScope;
       this.rootScopeFailover  = options && options.rootScopeFailover && true;
-      // this.useApplyAsync      = options && options.useApplyAsync     || false;
+      this.useApplyAsync      = options && options.useApplyAsync     || false;
       this._reconnectAttempts = options && options.reconnectAttempts || 0;
       this.initialTimeout     = options && options.initialTimeout    || 500; // 500ms
       this.maxTimeout         = options && options.maxTimeout        || 5 * 60 * 1000; // 5 minutes
@@ -216,26 +216,36 @@
 
     $WebSocket.prototype._onMessageHandler = function _onMessageHandler(message) {
       var pattern;
-      var socketInstance = this;
+      var self = this;
       var currentCallback;
-      for (var i = 0; i < socketInstance.onMessageCallbacks.length; i++) {
-        currentCallback = socketInstance.onMessageCallbacks[i];
+      for (var i = 0; i < self.onMessageCallbacks.length; i++) {
+        currentCallback = self.onMessageCallbacks[i];
         pattern = currentCallback.pattern;
         if (pattern) {
           if (isString(pattern) && message.data === pattern) {
-            currentCallback.fn.call(socketInstance, message);
-            socketInstance.safeDigest(currentCallback.autoApply);
+            applyAsyncOrDigest(currentCallback.fn, currentCallback.autoApply, message);
           }
           else if (pattern instanceof RegExp && pattern.exec(message.data)) {
-            currentCallback.fn.call(socketInstance, message);
-            socketInstance.safeDigest(currentCallback.autoApply);
+            applyAsyncOrDigest(currentCallback.fn, currentCallback.autoApply, message);
           }
         }
         else {
-          currentCallback.fn.call(socketInstance, message);
-          socketInstance.safeDigest(currentCallback.autoApply);
+          applyAsyncOrDigest(currentCallback.fn, currentCallback.autoApply, message);
         }
       }
+
+      function applyAsyncOrDigest(callback, autoApply, args) {
+        args = arraySlice.call(arguments, 2);
+        if (self.useApplyAsync) {
+          self.scope.$applyAsync(function() {
+            callback.apply(self, args);
+          });
+        } else {
+          callback.apply(self, args);
+          self.safeDigest(autoApply);
+        }
+      }
+
     };
 
     $WebSocket.prototype.close = function close(force) {
