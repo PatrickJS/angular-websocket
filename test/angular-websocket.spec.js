@@ -236,6 +236,62 @@ describe('angular-websocket', function() {
         $websocketBackend.flush();
       }));
     });
+
+
+    describe('.safeDigest', function() {
+
+      it('should force digest if force parameter is true', inject(function($rootScope) {
+        var digest = spyOn($rootScope, '$digest');
+
+        var url = 'ws://foo/safeDigest';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        expect(digest).not.toHaveBeenCalled();
+        ws.safeDigest(true);
+        expect(digest).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      }));
+
+      it('should not digest if force parameter and $$phase are true', inject(function($rootScope) {
+        var digest = spyOn($rootScope, '$digest');
+
+        var url = 'ws://foo/safeDigest';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        expect(digest).not.toHaveBeenCalled();
+        $rootScope.$$phase = true;
+        ws.safeDigest(true);
+        expect(digest).not.toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      }));
+
+
+      it('should digest scope parameter', inject(function($rootScope) {
+        var isolateScope = $rootScope.$new(true);
+        var digest = spyOn($rootScope, '$digest');
+        var childDigest = spyOn(isolateScope, '$digest');
+
+        var url = 'ws://foo/safeDigest';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        ws.scope = isolateScope;
+
+        expect(digest).not.toHaveBeenCalled();
+        expect(childDigest).not.toHaveBeenCalled();
+        ws.safeDigest(true);
+
+        expect(childDigest).toHaveBeenCalled();
+        expect(digest).not.toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      }));
+
+    });
     describe('._onCloseHandler', function() {
       it('should call .reconnect if the CloseEvent indicates a non-intentional close', function() {
         var url = 'ws://foo/onclose';
