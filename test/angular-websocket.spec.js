@@ -193,6 +193,49 @@ describe('angular-websocket', function() {
     });
 
 
+    describe('.reconnect', function() {
+      it('should call .close', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        $websocketBackend.expectClose();
+        ws.reconnect();
+
+        $websocketBackend.flush();
+      });
+
+      it('should call ._connect if the _getBackoffDelay is 0', inject(function($timeout) {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        var spy = spyOn(ws, '_connect');
+        ws.reconnect();
+        $timeout.flush();
+        expect(spy).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      }));
+
+      it('should not call ._connect if the _getBackoffDelay is not 0', inject(function($timeout) {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        var spy = spyOn(ws, '_connect');
+        var spyBackoff = spyOn(ws, '_getBackoffDelay').and.callFake(function() {
+          return 9001;
+        });
+        ws.reconnect();
+        $timeout.flush(9000);
+        expect(spy).not.toHaveBeenCalled();
+        $timeout.flush(1);
+        expect(spy).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      }));
+    });
     describe('._onCloseHandler', function() {
       it('should call .reconnect if the CloseEvent indicates a non-intentional close', function() {
         var url = 'ws://foo/onclose';
