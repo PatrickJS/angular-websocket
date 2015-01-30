@@ -292,12 +292,11 @@
     };
 
     $WebSocket.prototype.reconnect = function reconnect() {
-      var socketInstance = this;
-      socketInstance.close();
+      this.close();
 
-      $timeout(socketInstance._connect, socketInstance._getBackoffDelay(++socketInstance._reconnectAttempts));
+      $timeout(this._connect.bind(this), this._getBackoffDelay(++this._reconnectAttempts));
 
-      return socketInstance;
+      return this;
     };
     // Exponential Backoff Formula by Prof. Douglas Thain
     // http://dthain.blogspot.co.uk/2009/02/exponential-backoff-in-distributed.html
