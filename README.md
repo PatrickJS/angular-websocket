@@ -152,6 +152,7 @@ In the project root directory open `index.html` in the example folder
  * Add .on(event)
  * Include more examples of patterns for realtime Angular apps
  * Allow for optional configuration object in $websocket constructor
+ * Add W3C Websocket support
  * Add socket.io support
  * Add SockJS support
  * Add Faye support
