@@ -1,3 +1,14 @@
+## 1.0.8 (2015-1-29)
+
+Features:
+  - Allow .asyncApply() if useApplyAsync is true in config
+  - Pass event to .notifyOpenCallbacks() callbacks
+  - Tests for .bindToScope and .safeDigest
+
+Bugfixes:
+  - Bind ._connect() correctly for .reconnect()
+  - Correct rootScopeFailover of $rootScope with bindToScope
+
 ## 1.0.7 (2015-1-20)
 
 Features:

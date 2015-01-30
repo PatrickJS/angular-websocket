@@ -53,8 +53,6 @@
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
     function $WebSocket(url, protocols, options) {
-      // var bits = url.split('/');
-
       if (!options && isObject(protocols) && !isArray(protocols)) {
         options = protocols;
         protocols = undefined;
@@ -73,7 +71,7 @@
       // TODO: refactor options to use isDefined
       this.scope              = options && options.scope             || $rootScope;
       this.rootScopeFailover  = options && options.rootScopeFailover && true;
-      // this.useApplyAsync      = options && options.useApplyAsync     || false;
+      this.useApplyAsync      = options && options.useApplyAsync     || false;
       this._reconnectAttempts = options && options.reconnectAttempts || 0;
       this.initialTimeout     = options && options.initialTimeout    || 500; // 500ms
       this.maxTimeout         = options && options.maxTimeout        || 5 * 60 * 1000; // 5 minutes
@@ -113,22 +111,23 @@
     };
 
     $WebSocket.prototype.bindToScope = function bindToScope(scope) {
+      var self = this;
       if (scope) {
         this.scope = scope;
         if (this.rootScopeFailover) {
           this.scope.$on('$destroy', function() {
-            this.scope = $rootScope;
+            self.scope = $rootScope;
           });
         }
       }
-      return this;
+      return self;
     };
 
     $WebSocket.prototype._connect = function _connect(force) {
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
         this.socket = $websocketBackend.create(this.url, this.protocols);
-        this.socket.onopen = this._onOpenHandler.bind(this);
         this.socket.onmessage = this._onMessageHandler.bind(this);
+        this.socket.onopen  = this._onOpenHandler.bind(this);
         this.socket.onerror = this._onErrorHandler.bind(this);
         this.socket.onclose = this._onCloseHandler.bind(this);
       }
@@ -145,9 +144,9 @@
       }
     };
 
-    $WebSocket.prototype.notifyOpenCallbacks = function notifyOpenCallbacks() {
+    $WebSocket.prototype.notifyOpenCallbacks = function notifyOpenCallbacks(event) {
       for (var i = 0; i < this.onOpenCallbacks.length; i++) {
-        this.onOpenCallbacks[i].call(this);
+        this.onOpenCallbacks[i].call(this, event);
       }
     };
 
@@ -196,9 +195,9 @@
       return this;
     };
 
-    $WebSocket.prototype._onOpenHandler = function _onOpenHandler() {
+    $WebSocket.prototype._onOpenHandler = function _onOpenHandler(event) {
       this._reconnectAttempts = 0;
-      this.notifyOpenCallbacks();
+      this.notifyOpenCallbacks(event);
       this.fireQueue();
     };
 
@@ -215,26 +214,36 @@
 
     $WebSocket.prototype._onMessageHandler = function _onMessageHandler(message) {
       var pattern;
-      var socketInstance = this;
+      var self = this;
       var currentCallback;
-      for (var i = 0; i < socketInstance.onMessageCallbacks.length; i++) {
-        currentCallback = socketInstance.onMessageCallbacks[i];
+      for (var i = 0; i < self.onMessageCallbacks.length; i++) {
+        currentCallback = self.onMessageCallbacks[i];
         pattern = currentCallback.pattern;
         if (pattern) {
           if (isString(pattern) && message.data === pattern) {
-            currentCallback.fn.call(socketInstance, message);
-            socketInstance.safeDigest(currentCallback.autoApply);
+            applyAsyncOrDigest(currentCallback.fn, currentCallback.autoApply, message);
           }
           else if (pattern instanceof RegExp && pattern.exec(message.data)) {
-            currentCallback.fn.call(socketInstance, message);
-            socketInstance.safeDigest(currentCallback.autoApply);
+            applyAsyncOrDigest(currentCallback.fn, currentCallback.autoApply, message);
           }
         }
         else {
-          currentCallback.fn.call(socketInstance, message);
-          socketInstance.safeDigest(currentCallback.autoApply);
+          applyAsyncOrDigest(currentCallback.fn, currentCallback.autoApply, message);
         }
       }
+
+      function applyAsyncOrDigest(callback, autoApply, args) {
+        args = arraySlice.call(arguments, 2);
+        if (self.useApplyAsync) {
+          self.scope.$applyAsync(function() {
+            callback.apply(self, args);
+          });
+        } else {
+          callback.apply(self, args);
+          self.safeDigest(autoApply);
+        }
+      }
+
     };
 
     $WebSocket.prototype.close = function close(force) {
@@ -246,18 +255,18 @@
 
     $WebSocket.prototype.send = function send(data) {
       var deferred = $q.defer();
-      var socketInstance = this;
+      var self = this;
       var promise = cancelableify(deferred.promise);
 
-      if (socketInstance.readyState === socketInstance._readyStateConstants.RECONNECT_ABORTED) {
+      if (self.readyState === self._readyStateConstants.RECONNECT_ABORTED) {
         deferred.reject('Socket connection has been closed');
       }
       else {
-        socketInstance.sendQueue.push({
+        self.sendQueue.push({
           message: data,
           deferred: deferred
         });
-        socketInstance.fireQueue();
+        self.fireQueue();
       }
 
       // Credit goes to @btford
@@ -272,21 +281,20 @@
       }
 
       function cancel(reason) {
-        socketInstance.sendQueue.splice(socketInstance.sendQueue.indexOf(data), 1);
+        self.sendQueue.splice(self.sendQueue.indexOf(data), 1);
         deferred.reject(reason);
-        return socketInstance;
+        return self;
       }
 
       return promise;
     };
 
     $WebSocket.prototype.reconnect = function reconnect() {
-      var socketInstance = this;
-      socketInstance.close();
+      this.close();
 
-      $timeout(socketInstance._connect, socketInstance._getBackoffDelay(++socketInstance._reconnectAttempts));
+      $timeout(this._connect.bind(this), this._getBackoffDelay(++this._reconnectAttempts));
 
-      return socketInstance;
+      return this;
     };
     // Exponential Backoff Formula by Prof. Douglas Thain
     // http://dthain.blogspot.co.uk/2009/02/exponential-backoff-in-distributed.html
@@ -334,7 +342,7 @@
     };
   }
 
-  // $WebSocketBackendProvider.$inject = ['$window'];
+  // $WebSocketBackendProvider.$inject = ['$window', '$log'];
   function $WebSocketBackendProvider($window, $log) {
     this.create = function create(url, protocols) {
       var match = /wss?:\/\//.exec(url);

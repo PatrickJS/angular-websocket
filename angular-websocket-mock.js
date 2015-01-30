@@ -11,7 +11,7 @@
 
 
     function $MockWebSocket(url, protocols) {
-      this.protocols = protocols || 'Sec-WebSocket-Protocol';
+      this.protocols = protocols;
       this.ssl = /(wss)/i.test(this.url);
 
     }
