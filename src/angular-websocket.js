@@ -113,15 +113,16 @@
     };
 
     $WebSocket.prototype.bindToScope = function bindToScope(scope) {
+      var self = this;
       if (scope) {
         this.scope = scope;
         if (this.rootScopeFailover) {
           this.scope.$on('$destroy', function() {
-            this.scope = $rootScope;
+            self.scope = $rootScope;
           });
         }
       }
-      return this;
+      return self;
     };
 
     $WebSocket.prototype._connect = function _connect(force) {
@@ -129,6 +130,7 @@
         this.socket = $websocketBackend.create(this.url, this.protocols);
         this.socket.onopen = this._onOpenHandler.bind(this);
         this.socket.onmessage = this._onMessageHandler.bind(this);
+        this.socket.onopen  = this._onOpenHandler.bind(this);
         this.socket.onerror = this._onErrorHandler.bind(this);
         this.socket.onclose = this._onCloseHandler.bind(this);
       }
