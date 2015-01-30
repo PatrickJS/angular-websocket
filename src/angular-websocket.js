@@ -128,7 +128,6 @@
     $WebSocket.prototype._connect = function _connect(force) {
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
         this.socket = $websocketBackend.create(this.url, this.protocols);
-        this.socket.onopen = this._onOpenHandler.bind(this);
         this.socket.onmessage = this._onMessageHandler.bind(this);
         this.socket.onopen  = this._onOpenHandler.bind(this);
         this.socket.onerror = this._onErrorHandler.bind(this);
@@ -147,9 +146,9 @@
       }
     };
 
-    $WebSocket.prototype.notifyOpenCallbacks = function notifyOpenCallbacks() {
+    $WebSocket.prototype.notifyOpenCallbacks = function notifyOpenCallbacks(event) {
       for (var i = 0; i < this.onOpenCallbacks.length; i++) {
-        this.onOpenCallbacks[i].call(this);
+        this.onOpenCallbacks[i].call(this, event);
       }
     };
 
@@ -198,9 +197,9 @@
       return this;
     };
 
-    $WebSocket.prototype._onOpenHandler = function _onOpenHandler() {
+    $WebSocket.prototype._onOpenHandler = function _onOpenHandler(event) {
       this._reconnectAttempts = 0;
-      this.notifyOpenCallbacks();
+      this.notifyOpenCallbacks(event);
       this.fireQueue();
     };
 
