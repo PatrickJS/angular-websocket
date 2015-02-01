@@ -17,6 +17,8 @@ You can download angular-websocket by:
 * (prefered) Using bower and running `bower install angular-websocket --save`
 * Using npm and running `npm install angular-websocket --save`
 * Downloading it manually by clicking [here to download development unminified version](https://raw.github.com/gdi2290/angular-websocket/master/angular-websocket.js)
+* CDN for development `https://rawgit.com/gdi2290/angular-websocket/v1.0.8/angular-websocket.js`
+* CDN for production `https://cdn.rawgit.com/gdi2290/angular-websocket/v1.0.8/angular-websocket.min.js`
 
 ## Usage
 
