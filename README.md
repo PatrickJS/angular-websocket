@@ -142,13 +142,13 @@ $ bower install
 
 ### Manual Tests
 
-In the project root directory open `index.html` in the example folder
+In the project root directory open `index.html` in the example folder or browserify example
 
 ### Distribute
 `$ npm run dist` Builds files with uglifyjs
 
 ### Support
-You can contact me either by: [submitting](https://github.com/gdi2290/angular-websocket/issues/new) an issue, tweeting me on twitter [@gdi2290](https://twitter.com/gdi2290), or chat me on [gitter](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+You can contact me either by: [submitting](https://github.com/gdi2290/angular-websocket/issues/new) an issue, [tweeting me](https://twitter.com/share?url=''&text=@gdi2290+I+need+help+with+...) on twitter [@gdi2290](https://twitter.com/gdi2290), or chat me on [gitter](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## TODO
  * Allow JSON if object is sent
