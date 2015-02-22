@@ -384,4 +384,7 @@
 
   angular.module('angular-websocket', ['ngWebSocket']);
 
+  if (typeof module === 'object' && typeof define !== 'function') {
+    module.exports = angular.module('ngWebSocket');
+  }
 }());
