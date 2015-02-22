@@ -1,4 +1,6 @@
 # angular-websocket
+
+[![Join the chat at https://gitter.im/gdi2290/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Travis](https://img.shields.io/travis/gdi2290/angular-websocket.svg?style=flat)](https://travis-ci.org/gdi2290/angular-websocket)
 [![Bower](https://img.shields.io/bower/v/angular-websocket.svg?style=flat)](https://github.com/gdi2290/angular-websocket)
 [![npm](https://img.shields.io/npm/v/angular-websocket.svg?style=flat)](https://www.npmjs.com/package/angular-websocket)
