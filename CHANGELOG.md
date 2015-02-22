@@ -1,3 +1,11 @@
+## 1.0.9 (2015-2-22)
+
+Features:
+  - Export module for better browserify support
+
+Bugfixes:
+  - Missing `ws` dependency for browserify
+
 ## 1.0.8 (2015-1-29)
 
 Features:

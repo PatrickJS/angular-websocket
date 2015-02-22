@@ -101,4 +101,7 @@
 
   angular.module('angular-websocket-mock', ['ngWebSocketMock']);
 
+  if (typeof module === 'object' && typeof define !== 'function') {
+    module.exports = angular.module('ngWebSocketMock');
+  }
 }());
