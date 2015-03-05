@@ -109,7 +109,25 @@ then        | resolve:Function, reject:Function | Resolves when message has been
 
 ### Service: `$websocketBackend` (in module `ngWebSocketMock`)
 
-Similar to [`httpBackend`](https://ng-click.com/$httpBackend) mock in AngularJS's `ngMock` module
+Similar to [`httpBackend`](https://ng-click.com/$httpBackend) mock in
+AngularJS's `ngMock` module. You can use `ngWebSocketMock` to mock a websocket
+server in order to test your applications:
+
+```javascript
+    var $websocketBackend;
+
+    beforeEach(angular.mock.module('ngWebSocket', 'ngWebSocketMock');
+
+    beforeEach(inject(function (_$websocketBackend_) {
+      $websocketBackend = _$websocketBackend_;
+      $websocketBackend.mock();
+
+      $websocketBackend.expectConnect('ws://localhost:8080/api');
+      $websocketBackend.expectSend({data: JSON.stringify({test: true})});
+
+      $websocketBackend.expectConnect(playUrl);
+    }));
+```
 
 ### Methods
 
@@ -165,4 +183,3 @@ You can contact me either by: [submitting](https://github.com/gdi2290/angular-we
 
 ## License
 [MIT](https://github.com/gdi2290/angular-websocket/blob/master/LICENSE)
-
