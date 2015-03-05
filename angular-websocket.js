@@ -27,28 +27,6 @@
       return -1;
     };
   }
-  // ie8 wat
-  if (!Function.prototype.bind) {
-    Function.prototype.bind = function(oThis) {
-      if (typeof this !== 'function') {
-        // closest thing possible to the ECMAScript 5
-        // internal IsCallable function
-        throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-      }
-
-      var aArgs   = arraySlice.call(arguments, 1),
-          fToBind = this,
-          FNOP    = function() {},
-          fBound  = function() {
-            return fToBind.apply(this instanceof FNOP && oThis ? this : oThis, aArgs.concat(arraySlice.call(arguments)));
-          };
-
-      FNOP.prototype = this.prototype;
-      fBound.prototype = new FNOP();
-
-      return fBound;
-    };
-  }
 
   // $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];
   function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
@@ -127,10 +105,10 @@
     $WebSocket.prototype._connect = function _connect(force) {
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
         this.socket = $websocketBackend.create(this.url, this.protocols);
-        this.socket.onmessage = this._onMessageHandler.bind(this);
-        this.socket.onopen  = this._onOpenHandler.bind(this);
-        this.socket.onerror = this._onErrorHandler.bind(this);
-        this.socket.onclose = this._onCloseHandler.bind(this);
+        this.socket.onmessage = angular.bind(this, this._onMessageHandler);
+        this.socket.onopen  = angular.bind(this, this._onOpenHandler);
+        this.socket.onerror = angular.bind(this, this._onErrorHandler);
+        this.socket.onclose = angular.bind(this, this._onCloseHandler);
       }
     };
 
@@ -293,7 +271,7 @@
     $WebSocket.prototype.reconnect = function reconnect() {
       this.close();
 
-      $timeout(this._connect.bind(this), this._getBackoffDelay(++this._reconnectAttempts));
+      $timeout(angular.bind(this, this._connect), this._getBackoffDelay(++this._reconnectAttempts));
 
       return this;
     };
