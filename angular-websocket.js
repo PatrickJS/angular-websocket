@@ -54,6 +54,7 @@
       this._reconnectAttempts = options && options.reconnectAttempts || 0;
       this.initialTimeout     = options && options.initialTimeout    || 500; // 500ms
       this.maxTimeout         = options && options.maxTimeout        || 5 * 60 * 1000; // 5 minutes
+      this.alwaysReconnect    = options && options.alwaysReconnect   || false;
 
       this.sendQueue          = [];
       this.onOpenCallbacks    = [];
@@ -182,7 +183,7 @@
 
     $WebSocket.prototype._onCloseHandler = function _onCloseHandler(event) {
       this.notifyCloseCallbacks(event);
-      if (this._reconnectableStatusCodes.indexOf(event.code) > -1) {
+      if (this.alwaysReconnect || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
         this.reconnect();
       }
     };

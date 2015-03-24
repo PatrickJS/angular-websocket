@@ -358,6 +358,30 @@ describe('angular-websocket', function() {
 
         $websocketBackend.flush();
       });
+
+      it('should not call .reconnect if the CloseEvent indicates an intentional close and the alwaysReconnect flag is false', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {alwaysReconnect: false});
+        var spy = spyOn(ws, 'reconnect');
+        ws._onCloseHandler({code: 1000});
+        expect(spy).not.toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should call .reconnect if the CloseEvent indicates an intentional close and the alwaysReconnect flag is true', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {alwaysReconnect: true});
+        var spy = spyOn(ws, 'reconnect');
+        ws._onCloseHandler({code: 1000});
+        expect(spy).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
     });
 
 
