@@ -48,13 +48,13 @@
       // this.buffer = [];
 
       // TODO: refactor options to use isDefined
-      this.scope              = options && options.scope             || $rootScope;
-      this.rootScopeFailover  = options && options.rootScopeFailover && true;
-      this.useApplyAsync      = options && options.useApplyAsync     || false;
-      this._reconnectAttempts = options && options.reconnectAttempts || 0;
-      this.initialTimeout     = options && options.initialTimeout    || 500; // 500ms
-      this.maxTimeout         = options && options.maxTimeout        || 5 * 60 * 1000; // 5 minutes
-      this.alwaysReconnect    = options && options.alwaysReconnect   || false;
+      this.scope                       = options && options.scope                      || $rootScope;
+      this.rootScopeFailover           = options && options.rootScopeFailover          && true;
+      this.useApplyAsync               = options && options.useApplyAsync              || false;
+      this._reconnectAttempts          = options && options.reconnectAttempts          || 0;
+      this.initialTimeout              = options && options.initialTimeout             || 500; // 500ms
+      this.maxTimeout                  = options && options.maxTimeout                 || 5 * 60 * 1000; // 5 minutes
+      this.reconnectIfNotNormalClose   = options && options.reconnectIfNotNormalClose  || false;
 
       this.sendQueue          = [];
       this.onOpenCallbacks    = [];
@@ -72,6 +72,7 @@
 
     }
 
+
     $WebSocket.prototype._readyStateConstants = {
       'CONNECTING': 0,
       'OPEN': 1,
@@ -79,6 +80,8 @@
       'CLOSED': 3,
       'RECONNECT_ABORTED': 4
     };
+
+    $WebSocket.prototype._normalCloseCode = 1000;
 
     $WebSocket.prototype._reconnectableStatusCodes = [
       4000
@@ -183,7 +186,7 @@
 
     $WebSocket.prototype._onCloseHandler = function _onCloseHandler(event) {
       this.notifyCloseCallbacks(event);
-      if (this.alwaysReconnect || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
+      if ((this.reconnectIfNotNormalClose && event.code !== this._normalCloseCode) || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
         this.reconnect();
       }
     };
