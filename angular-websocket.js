@@ -275,7 +275,12 @@
     $WebSocket.prototype.reconnect = function reconnect() {
       this.close();
 
-      $timeout(angular.bind(this, this._connect), this._getBackoffDelay(++this._reconnectAttempts));
+      var backoffDelay = this._getBackoffDelay(++this._reconnectAttempts);
+
+      var backoffDelaySeconds = backoffDelay / 1000;
+      console.log('Reconnecting in ' + backoffDelaySeconds + ' seconds');
+
+      $timeout(angular.bind(this, this._connect), backoffDelay);
 
       return this;
     };
