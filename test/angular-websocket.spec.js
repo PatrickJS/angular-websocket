@@ -347,13 +347,73 @@ describe('angular-websocket', function() {
     });
 
     describe('._onCloseHandler', function() {
-      it('should call .reconnect if the CloseEvent indicates a non-intentional close', function() {
+      it('should call .reconnect if the CloseEvent contains a reconnectable status code and the reconnectIfNotNormalClose is false', function() {
         var url = 'ws://foo/onclose';
         $websocketBackend.expectConnect(url);
 
-        var ws = $websocket(url);
+        var ws = $websocket(url, {reconnectIfNotNormalClose: false});
         var spy = spyOn(ws, 'reconnect');
         ws._onCloseHandler({code: 4000});
+        expect(spy).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should call .reconnect if the CloseEvent contains a reconnectable status code and the reconnectIfNotNormalClose is true', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {reconnectIfNotNormalClose: true});
+        var spy = spyOn(ws, 'reconnect');
+        ws._onCloseHandler({code: 4000});
+        expect(spy).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should not call .reconnect if the CloseEvent indicates an intentional close and the reconnectIfNotNormalClose flag is false', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {reconnectIfNotNormalClose: false});
+        var spy = spyOn(ws, 'reconnect');
+        ws._onCloseHandler({code: 1000});
+        expect(spy).not.toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should not call .reconnect if the CloseEvent indicates an intentional close and the reconnectIfNotNormalClose flag is true', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {reconnectIfNotNormalClose: true});
+        var spy = spyOn(ws, 'reconnect');
+        ws._onCloseHandler({code: 1000});
+        expect(spy).not.toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should not call .reconnect if the CloseEvent indicates a non-intentional close and the reconnectIfNotNormalClose flag is false', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {reconnectIfNotNormalClose: false});
+        var spy = spyOn(ws, 'reconnect');
+        ws._onCloseHandler({code: 1001});
+        expect(spy).not.toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should call .reconnect if the CloseEvent indicates a non-intentional close and the reconnectIfNotNormalClose flag is true', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {reconnectIfNotNormalClose: true});
+        var spy = spyOn(ws, 'reconnect');
+        ws._onCloseHandler({code: 1001});
         expect(spy).toHaveBeenCalled();
 
         $websocketBackend.flush();
