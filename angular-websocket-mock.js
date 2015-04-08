@@ -23,6 +23,8 @@
     $MockWebSocket.prototype.close = function () {
       pendingCloses.push(true);
     };
+	
+	$MockWebSocket.prototype.readyState = 1;
 
     function createWebSocketBackend(url, protocols) {
       pendingConnects.push(url);
@@ -57,7 +59,7 @@
       while (msg = pendingSends.shift()) {
         var j;
         sendQueue.forEach(function(pending, i) {
-          if (pending.message === msg.message) {
+          if (pending === msg) {
             j = i;
           }
         });
