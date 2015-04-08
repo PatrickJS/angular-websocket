@@ -120,12 +120,9 @@ server in order to test your applications:
 
     beforeEach(inject(function (_$websocketBackend_) {
       $websocketBackend = _$websocketBackend_;
-      $websocketBackend.mock();
 
       $websocketBackend.expectConnect('ws://localhost:8080/api');
       $websocketBackend.expectSend({data: JSON.stringify({test: true})});
-
-      $websocketBackend.expectConnect(playUrl);
     }));
 ```
 
