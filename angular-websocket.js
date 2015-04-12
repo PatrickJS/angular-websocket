@@ -269,6 +269,11 @@
         return self;
       }
 
+      if ($websocketBackend.isMocked && $websocketBackend.isMocked() &&
+              $websocketBackend.isConnected(this.url)) {
+        this._onMessageHandler($websocketBackend.mockSend());
+      }
+
       return promise;
     };
 
