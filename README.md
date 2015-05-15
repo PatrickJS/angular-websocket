@@ -57,8 +57,7 @@ You can download angular-websocket by:
 
       return methods;
     })
-    .controller('SomeController', function (MyData) {
-
+    .controller('SomeController', function ($scope, MyData) {
       $scope.MyData = MyData;
     });
   </script>
