@@ -24,7 +24,7 @@ You can download angular-websocket by:
 ## Usage
 
 ```html
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
   <script src="bower_components/angular-websocket/angular-websocket.js"></script>
   <section ng-controller="SomeController">
     <ul>
