@@ -330,8 +330,8 @@
       });
     }
 
-    return function(url, protocols) {
-      return new $WebSocket(url, protocols);
+    return function(url, protocols, options) {
+      return new $WebSocket(url, protocols, options);
     };
   }
 
