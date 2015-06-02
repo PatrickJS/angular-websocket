@@ -1,3 +1,7 @@
+## 1.0.13 (2015-6-2)
+ Build:
+  - UpdatedevDependencies
+
 ## 1.0.12 (2015-6-2)
 
 Features:
