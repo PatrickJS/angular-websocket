@@ -1,8 +1,8 @@
 {
   "name": "angular-websocket",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "main": "angular-websocket.min.js",
-  "description": "An AngularJS 1.x WebSocket service for connecting client applications to servers.",
+  "description": "An Angular WebSocket service for connecting client applications to servers.",
   "homepage": "https://github.com/angular-class/angular-websocket",
   "bugs": "https://github.com/angular-class/angular-websocket/issues",
   "keywords": [
