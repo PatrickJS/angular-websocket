@@ -177,6 +177,17 @@ You can contact me either by: [submitting](https://github.com/gdi2290/angular-we
  * Add SockJS support
  * Add Faye support
  * Add PubNub support
+___
+
+enjoy — **AngularClass** 
+
+<br><br>
+
+[![AngularClass](https://cloud.githubusercontent.com/assets/1016365/9863770/cb0620fc-5af7-11e5-89df-d4b0b2cdfc43.png  "Angular Class")](https://angularclass.com)
+##[AngularClass](https://angularclass.com)
+> Learn AngularJS, Angular 2, and Modern Web Development form the best.
+> Looking for corporate Angular training, want to host us, or Angular consulting? patrick@angularclass.com
+
 
 ## License
 [MIT](https://github.com/gdi2290/angular-websocket/blob/master/LICENSE)
