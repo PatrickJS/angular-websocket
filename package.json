@@ -3,8 +3,8 @@
   "version": "1.0.13",
   "main": "angular-websocket.min.js",
   "description": "An AngularJS 1.x WebSocket service for connecting client applications to servers.",
-  "homepage": "https://github.com/gdi2290/angular-websocket",
-  "bugs": "https://github.com/gdi2290/angular-websocket/issues",
+  "homepage": "https://github.com/angular-class/angular-websocket",
+  "bugs": "https://github.com/angular-class/angular-websocket/issues",
   "keywords": [
     "angular",
     "angularjs",
@@ -17,6 +17,8 @@
     "angular-socket",
     "ngWebSocket",
     "ngWebSockets",
+    "angular-class",
+    "AngularClass",
     "gdi2290",
     "PatrickJS"
   ],
@@ -31,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:gdi2290/angular-websocket.git"
+    "url": "git@github.com:angular-class/angular-websocket.git"
   },
   "licenses": [
     {
