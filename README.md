@@ -1,4 +1,11 @@
-# angular-websocket  [![Join the chat at https://gitter.im/gdi2290/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
+<p align="center">
+  <a href="https://angularclass.com" target="_blank">
+    <img src="https://cloud.githubusercontent.com/assets/1016365/10355203/f50e880c-6d1d-11e5-8f59-d0d8c0870739.png" alt="Angular Websocket" width="500" height="320"/>
+  </a>
+</p>
+
+
+# Angular Websocket  [![Join the chat at https://gitter.im/gdi2290/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
 
 [![Travis](https://img.shields.io/travis/gdi2290/angular-websocket.svg?style=flat)](https://travis-ci.org/gdi2290/angular-websocket)
 [![Bower](https://img.shields.io/bower/v/angular-websocket.svg?style=flat)](https://github.com/gdi2290/angular-websocket)
