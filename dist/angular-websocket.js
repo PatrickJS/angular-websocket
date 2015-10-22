@@ -41,7 +41,6 @@
       this.url = url || 'Missing URL';
       this.ssl = /(wss)/i.test(this.url);
 
-      // this.binaryType = '';
       // this.extensions = '';
       // this.bufferedAmount = 0;
       // this.trasnmitting = false;
@@ -54,6 +53,7 @@
       this.initialTimeout              = options && options.initialTimeout             || 500; // 500ms
       this.maxTimeout                  = options && options.maxTimeout                 || 5 * 60 * 1000; // 5 minutes
       this.reconnectIfNotNormalClose   = options && options.reconnectIfNotNormalClose  || false;
+      this.binaryType                  = options && options.binaryType                 || 'blob';
 
       this._reconnectAttempts = 0;
       this.sendQueue          = [];
@@ -113,6 +113,7 @@
         this.socket.onopen  = angular.bind(this, this._onOpenHandler);
         this.socket.onerror = angular.bind(this, this._onErrorHandler);
         this.socket.onclose = angular.bind(this, this._onCloseHandler);
+        this.socket.binaryType = this.binaryType;
       }
     };
 
@@ -121,7 +122,7 @@
         var data = this.sendQueue.shift();
 
         this.socket.send(
-          isString(data.message) ? data.message : JSON.stringify(data.message)
+          data.message
         );
         data.deferred.resolve();
       }
