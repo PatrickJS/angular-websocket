@@ -1,4 +1,11 @@
-# angular-websocket  [![Join the chat at https://gitter.im/gdi2290/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
+<p align="center">
+  <a href="https://angularclass.com" target="_blank">
+    <img src="https://cloud.githubusercontent.com/assets/1016365/10355203/f50e880c-6d1d-11e5-8f59-d0d8c0870739.png" alt="Angular Websocket" width="500" height="320"/>
+  </a>
+</p>
+
+
+# Angular Websocket [![Join Slack](https://img.shields.io/badge/slack-join-brightgreen.svg)](https://angularclass.com/slack-join) [![Join the chat at https://gitter.im/gdi2290/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
 
 [![Travis](https://img.shields.io/travis/gdi2290/angular-websocket.svg?style=flat)](https://travis-ci.org/gdi2290/angular-websocket)
 [![Bower](https://img.shields.io/bower/v/angular-websocket.svg?style=flat)](https://github.com/gdi2290/angular-websocket)
@@ -162,8 +169,13 @@ In the project root directory open `index.html` in the example folder or browser
 ### Distribute
 `$ npm run dist` Builds files with uglifyjs
 
-### Support
-You can contact me either by: [submitting](https://github.com/gdi2290/angular-websocket/issues/new) an issue, [tweeting me](https://twitter.com/share?url=''&text=@gdi2290+I+need+help+with+…) on twitter [@gdi2290](https://twitter.com/gdi2290), or chat me on [gitter](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+### Support, Questions, or Feedback
+> Contact us anytime for anything about this repo or Angular 2
+
+* [Slack: AngularClass](https://angularclass.com/slack-join)
+* [Gitter: angular-class/angular-websocket](https://gitter.im/angular-class/angular-websocket)
+* [Twitter: @AngularClass](https://twitter.com/AngularClass)
+
 
 ## TODO
  * Allow JSON if object is sent
@@ -177,6 +189,17 @@ You can contact me either by: [submitting](https://github.com/gdi2290/angular-we
  * Add SockJS support
  * Add Faye support
  * Add PubNub support
+___
+
+enjoy — **AngularClass** 
+
+<br><br>
+
+[![AngularClass](https://cloud.githubusercontent.com/assets/1016365/9863770/cb0620fc-5af7-11e5-89df-d4b0b2cdfc43.png  "Angular Class")](https://angularclass.com)
+##[AngularClass](https://angularclass.com)
+> Learn AngularJS, Angular 2, and Modern Web Development form the best.
+> Looking for corporate Angular training, want to host us, or Angular consulting? patrick@angularclass.com
+
 
 ## License
-[MIT](https://github.com/gdi2290/angular-websocket/blob/master/LICENSE)
+[MIT](https://github.com/angular-class/angular-websocket/blob/master/LICENSE)

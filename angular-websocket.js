@@ -41,6 +41,7 @@
       this.url = url || 'Missing URL';
       this.ssl = /(wss)/i.test(this.url);
 
+      // this.binaryType = '';
       // this.extensions = '';
       // this.bufferedAmount = 0;
       // this.trasnmitting = false;
@@ -53,7 +54,6 @@
       this.initialTimeout              = options && options.initialTimeout             || 500; // 500ms
       this.maxTimeout                  = options && options.maxTimeout                 || 5 * 60 * 1000; // 5 minutes
       this.reconnectIfNotNormalClose   = options && options.reconnectIfNotNormalClose  || false;
-      this.binaryType                  = options && options.binaryType                 || 'blob';
 
       this._reconnectAttempts = 0;
       this.sendQueue          = [];
@@ -109,7 +109,6 @@
     $WebSocket.prototype._connect = function _connect(force) {
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
         this.socket = $websocketBackend.create(this.url, this.protocols);
-        this.socket.binaryType = this.binaryType;
         this.socket.onmessage = angular.bind(this, this._onMessageHandler);
         this.socket.onopen  = angular.bind(this, this._onOpenHandler);
         this.socket.onerror = angular.bind(this, this._onErrorHandler);
@@ -122,7 +121,7 @@
         var data = this.sendQueue.shift();
 
         this.socket.send(
-          data.message
+          isString(data.message) ? data.message : JSON.stringify(data.message)
         );
         data.deferred.resolve();
       }
