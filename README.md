@@ -173,7 +173,7 @@ In the project root directory open `index.html` in the example folder or browser
 > Contact us anytime for anything about this repo or Angular 2
 
 * [Slack: AngularClass](https://angularclass.com/slack-join)
-* [Gitter: angular-class/angular-websocket](https://gitter.im/angular-class/angular-websocket)
+* [Gitter: angularclass/angular-websocket](https://gitter.im/angularclass/angular-websocket)
 * [Twitter: @AngularClass](https://twitter.com/AngularClass)
 
 
@@ -202,4 +202,4 @@ enjoy — **AngularClass**
 
 
 ## License
-[MIT](https://github.com/angular-class/angular-websocket/blob/master/LICENSE)
+[MIT](https://github.com/angularclass/angular-websocket/blob/master/LICENSE)
