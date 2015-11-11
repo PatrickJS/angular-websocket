@@ -5,7 +5,7 @@
 </p>
 
 
-# Angular Websocket [![Join Slack](https://img.shields.io/badge/slack-join-brightgreen.svg)](https://angularclass.com/slack-join) [![Join the chat at https://gitter.im/gdi2290/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
+# Angular Websocket [![Join Slack](https://img.shields.io/badge/slack-join-brightgreen.svg)](https://angularclass.com/slack-join) [![Join the chat at https://gitter.im/AngularClass/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AngularClass/angular-websocket?utm_campaign=pr-badge&utm_content=badge&utm_medium=badge&utm_source=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
 
 [![Travis](https://img.shields.io/travis/gdi2290/angular-websocket.svg?style=flat)](https://travis-ci.org/gdi2290/angular-websocket)
 [![Bower](https://img.shields.io/bower/v/angular-websocket.svg?style=flat)](https://github.com/gdi2290/angular-websocket)
@@ -173,7 +173,7 @@ In the project root directory open `index.html` in the example folder or browser
 > Contact us anytime for anything about this repo or Angular 2
 
 * [Slack: AngularClass](https://angularclass.com/slack-join)
-* [Gitter: angularclass/angular-websocket](https://gitter.im/angularclass/angular-websocket)
+* [Gitter: angularclass/angular-websocket](https://gitter.im/AngularClass/angular-websocket)
 * [Twitter: @AngularClass](https://twitter.com/AngularClass)
 
 
