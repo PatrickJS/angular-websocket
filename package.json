@@ -35,7 +35,7 @@
     "type": "git",
     "url": "git@github.com:angular-class/angular-websocket.git"
   },
-  "license": "Apache-2.0",
+  "license": "MIT",
   "browser": {
     "angular-websocket": "./dist/angular-websocket.js",
     "angular-websocket-mock": "./dist/angular-websocket-mock.js"
