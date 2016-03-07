@@ -346,7 +346,7 @@
       }
 
       // CommonJS
-      if (typeof exports === 'object' && require) {
+      if (typeof exports === 'object' && typeof require === 'function') {
         try {
           ws = require('ws');
           Socket = (ws.Client || ws.client || ws);
