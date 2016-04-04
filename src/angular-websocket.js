@@ -185,14 +185,30 @@
     };
 
     $WebSocket.prototype._onCloseHandler = function _onCloseHandler(event) {
-      this.notifyCloseCallbacks(event);
+      var self = this;
+      if (self.useApplyAsync) {
+        self.scope.$applyAsync(function() {
+          self.notifyCloseCallbacks(event);
+        });
+      } else {
+        self.notifyCloseCallbacks(event);
+        self.safeDigest(autoApply);
+      }
       if ((this.reconnectIfNotNormalClose && event.code !== this._normalCloseCode) || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
         this.reconnect();
       }
     };
 
     $WebSocket.prototype._onErrorHandler = function _onErrorHandler(event) {
-      this.notifyErrorCallbacks(event);
+      var self = this;
+      if (self.useApplyAsync) {
+        self.scope.$applyAsync(function() {
+          self.notifyErrorCallbacks(event);
+        });
+      } else {
+        self.notifyErrorCallbacks(event);
+        self.safeDigest(autoApply);
+      }
     };
 
     $WebSocket.prototype._onMessageHandler = function _onMessageHandler(message) {
