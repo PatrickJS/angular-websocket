@@ -41,6 +41,7 @@
       this.url = url || 'Missing URL';
       this.ssl = /(wss)/i.test(this.url);
 
+      // this.binaryType = '';
       // this.extensions = '';
       // this.bufferedAmount = 0;
       // this.trasnmitting = false;
@@ -53,7 +54,6 @@
       this.initialTimeout              = options && options.initialTimeout             || 500; // 500ms
       this.maxTimeout                  = options && options.maxTimeout                 || 5 * 60 * 1000; // 5 minutes
       this.reconnectIfNotNormalClose   = options && options.reconnectIfNotNormalClose  || false;
-      this.binaryType                  = options && options.binaryType                 || 'blob';
 
       this._reconnectAttempts = 0;
       this.sendQueue          = [];
@@ -113,7 +113,6 @@
         this.socket.onopen  = angular.bind(this, this._onOpenHandler);
         this.socket.onerror = angular.bind(this, this._onErrorHandler);
         this.socket.onclose = angular.bind(this, this._onCloseHandler);
-        this.socket.binaryType = this.binaryType;
       }
     };
 
@@ -122,7 +121,7 @@
         var data = this.sendQueue.shift();
 
         this.socket.send(
-          data.message
+          isString(data.message) ? data.message : JSON.stringify(data.message)
         );
         data.deferred.resolve();
       }
@@ -186,14 +185,30 @@
     };
 
     $WebSocket.prototype._onCloseHandler = function _onCloseHandler(event) {
-      this.notifyCloseCallbacks(event);
+      var self = this;
+      if (self.useApplyAsync) {
+        self.scope.$applyAsync(function() {
+          self.notifyCloseCallbacks(event);
+        });
+      } else {
+        self.notifyCloseCallbacks(event);
+        self.safeDigest(autoApply);
+      }
       if ((this.reconnectIfNotNormalClose && event.code !== this._normalCloseCode) || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
         this.reconnect();
       }
     };
 
     $WebSocket.prototype._onErrorHandler = function _onErrorHandler(event) {
-      this.notifyErrorCallbacks(event);
+      var self = this;
+      if (self.useApplyAsync) {
+        self.scope.$applyAsync(function() {
+          self.notifyErrorCallbacks(event);
+        });
+      } else {
+        self.notifyErrorCallbacks(event);
+        self.safeDigest(autoApply);
+      }
     };
 
     $WebSocket.prototype._onMessageHandler = function _onMessageHandler(message) {
@@ -346,7 +361,7 @@
       }
 
       // CommonJS
-      if (typeof exports === 'object' && typeof require === 'function') {
+      if (typeof exports === 'object' && require) {
         try {
           ws = require('ws');
           Socket = (ws.Client || ws.client || ws);
