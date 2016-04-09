@@ -287,7 +287,14 @@
 
       if ($websocketBackend.isMocked && $websocketBackend.isMocked() &&
               $websocketBackend.isConnected(this.url)) {
-        this._onMessageHandler($websocketBackend.mockSend());
+        var mockSend = $websocketBackend.mockSend();
+        if(mockSend.then) {
+          mockSend.then(function(value) {
+            self._onMessageHandler(value);
+          });
+        } else {
+          self._onMessageHandler(mockSend);
+        }
       }
 
       return promise;
