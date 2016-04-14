@@ -287,7 +287,7 @@
 
       if ($websocketBackend.isMocked && $websocketBackend.isMocked() &&
               $websocketBackend.isConnected(this.url)) {
-        var mockSend = $websocketBackend.mockSend();
+        var mockSend = $websocketBackend.mockSend(data);
         if(mockSend.then && typeof(mockSend.then) == 'function') {
           mockSend.then(function(value) {
             self._onMessageHandler(value);
