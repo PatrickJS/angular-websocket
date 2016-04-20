@@ -192,7 +192,7 @@
         });
       } else {
         self.notifyCloseCallbacks(event);
-        self.safeDigest(autoApply);
+        self.safeDigest(true);
       }
       if ((this.reconnectIfNotNormalClose && event.code !== this._normalCloseCode) || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
         this.reconnect();
@@ -207,7 +207,7 @@
         });
       } else {
         self.notifyErrorCallbacks(event);
-        self.safeDigest(autoApply);
+        self.safeDigest(true);
       }
     };
 
