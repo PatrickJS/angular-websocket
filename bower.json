@@ -21,7 +21,7 @@
   "authors": [
     "gdi2290 <github@gdi2290.com>"
   ],
-  "main": "angular-websocket.min.js",
+  "main": "./dist/angular-websocket.js",
   "ignore": [
     ".bowerrc",
     ".gitignore",
