@@ -7,7 +7,6 @@
 *.yml
 *.xml
 karma.conf.js
-test.sh
 dist.sh
 bower.json
 src/

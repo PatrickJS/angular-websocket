@@ -1,5 +1,25 @@
-(function() {
+(function (global, factory) {
+  if (typeof define === "function" && define.amd) {
+    define(['module', 'angular'], factory);
+  } else if (typeof exports !== "undefined") {
+    factory(module, require('angular'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, global.angular);
+    global.angularWebsocketMock = mod.exports;
+  }
+})(this, function (module, _angular) {
   'use strict';
+
+  var _angular2 = _interopRequireDefault(_angular);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function $WebSocketBackend() {
     var connectQueue = [];
@@ -10,33 +30,31 @@
     var pendingSends = [];
     var mock = false;
 
-
     function $MockWebSocket(url, protocols) {
       this.protocols = protocols;
       this.ssl = /(wss)/i.test(this.url);
-
     }
 
     $MockWebSocket.prototype.send = function (msg) {
       pendingSends.push(msg);
     };
 
-    this.mockSend = function() {
+    this.mockSend = function () {
       if (mock) {
         return sendQueue.shift();
       }
     };
 
-    this.mock = function() {
+    this.mock = function () {
       mock = true;
     };
 
     this.isMocked = function () {
-        return mock;
+      return mock;
     };
 
-    this.isConnected = function(url) {
-        return connectQueue.indexOf(url) > -1;
+    this.isConnected = function (url) {
+      return connectQueue.indexOf(url) > -1;
     };
 
     $MockWebSocket.prototype.close = function () {
@@ -75,7 +93,7 @@
 
       while (msg = pendingSends.shift()) {
         var j;
-        sendQueue.forEach(function(pending, i) {
+        sendQueue.forEach(function (pending, i) {
           if (pending.message === msg.message) {
             j = i;
           }
@@ -111,16 +129,11 @@
         throw new Error('Requests waiting to be processed');
       }
     };
-
   } // end $WebSocketBackend
 
-  angular.module('ngWebSocketMock', [])
-  .service('WebSocketBackend',  $WebSocketBackend)
-  .service('$websocketBackend', $WebSocketBackend);
+  _angular2.default.module('ngWebSocketMock', []).service('WebSocketBackend', $WebSocketBackend).service('$websocketBackend', $WebSocketBackend);
 
-  angular.module('angular-websocket-mock', ['ngWebSocketMock']);
+  _angular2.default.module('angular-websocket-mock', ['ngWebSocketMock']);
 
-  if (typeof module === 'object' && typeof define !== 'function') {
-    module.exports = angular.module('ngWebSocketMock');
-  }
-}());
+  module.exports = _angular2.default.module('ngWebSocketMock');
+});
