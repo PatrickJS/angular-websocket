@@ -1,3 +1,25 @@
+## 2.0.0 (2016-5-21)
+
+Features:
+  - Repackage library
+  - Package source files no longer duplicated
+
+Bugfixes:
+  - autoApply is undefined error
+  - arraybuffer data type
+
+BREAKING CHANGES:
+  - package source files are not duplicated
+    - if using files from `/`, use `/dist/` instead
+      - change `/angular-websocket-mock.js` to `/dist/angular-websocket-mock.js`
+      - change `/angular-websocket.js` to `/dist/angular-websocket.js`
+      - change `/angular-websocket-min.js` to `/dist/angular-websocket-min.js`
+      - change `/angular-websocket-min.js.map` to `/dist/angular-websocket-min.js.map`
+
+## 1.1.0 (2016-4-4)
+
+## 1.0.14 (2015-9-15)
+
 ## 1.0.13 (2015-6-2)
  Build:
   - UpdatedevDependencies
