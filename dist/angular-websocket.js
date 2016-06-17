@@ -33,7 +33,7 @@
 
   var Socket;
 
-  if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object' && typeof require === 'function') {
+  if (typeof window === 'undefined') {
     try {
 
       Socket = ws.Client || ws.client || ws;
