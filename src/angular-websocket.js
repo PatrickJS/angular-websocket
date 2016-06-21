@@ -2,7 +2,7 @@ import angular from 'angular';
 
 var Socket;
 
-if (typeof exports === 'object' && typeof require === 'function') {
+if (typeof window === 'undefined') {
   try {
     var ws = require('ws');
 
