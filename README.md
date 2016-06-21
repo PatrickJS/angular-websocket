@@ -34,10 +34,8 @@ You can download angular-websocket by:
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
   <script src="bower_components/angular-websocket/angular-websocket.js"></script>
   <section ng-controller="SomeController">
-    <ul>
-      <li ng-repeat="data in MyData.collection track by $index">
-        {{ data }}
-      </li>
+    <ul ng-repeat="data in MyData.collection track by $index" >
+      <li> {{ data }} </li>
     </ul>
   </section>
   <script>
