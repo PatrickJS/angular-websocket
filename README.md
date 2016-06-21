@@ -45,7 +45,7 @@ You can download angular-websocket by:
     //                          WebSocket works as well
     .factory('MyData', function($websocket) {
       // Open a WebSocket connection
-      var dataStream = $websocket('wss://website.com/data');
+      var dataStream = $websocket('ws://website.com/data');
 
       var collection = [];
 
