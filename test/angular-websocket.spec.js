@@ -943,11 +943,19 @@ describe('angular-websocket', function() {
        expect(spy).toHaveBeenCalled();
      });
 
-     it("should be automatically called on mock close", function() {
+     it("should be automatically called on fake close", function() {
        var spy = jasmine.createSpy('callback');
        ws.onCloseCallbacks.push(spy);
        $websocketBackend.expectClose(url);
-       $websocketBackend.mockClose(url);
+       $websocketBackend.fakeClose(url);
+       $websocketBackend.flush();
+       expect(spy).toHaveBeenCalled();
+     });
+
+     it("should be automatically called on fake send", function() {
+       var spy = jasmine.createSpy('callback');
+       ws.onMessage(spy);
+       $websocketBackend.fakeMessage(url, {data: "test"});
        $websocketBackend.flush();
        expect(spy).toHaveBeenCalled();
      });

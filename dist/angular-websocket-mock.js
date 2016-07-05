@@ -28,6 +28,7 @@
     var pendingCloses = [];
     var sendQueue = [];
     var pendingSends = [];
+    var pendingMessages = [];
     var mock = false;
     var existingMocks = {};
 
@@ -52,12 +53,16 @@
       }
     };
 
-    this.mockClose = function (url, code) {
+    this.fakeClose = function (url, code) {
       if (existingMocks[url]) {
         existingMocks[url].map(function (mockSocket) {
           mockSocket.close(code);
         });
       }
+    };
+
+    this.fakeMessage = function (url, data) {
+      pendingMessages.push({ url: url, data: data });
     };
 
     this.mock = function () {
@@ -107,6 +112,16 @@
       });
     }
 
+    function callMessageCallbacks(url, data) {
+      if (existingMocks[url]) {
+        existingMocks[url].map(function (socketMock) {
+          if (socketMock.onmessage && typeof socketMock.onmessage === "function") {
+            socketMock.onmessage(data);
+          }
+        });
+      }
+    }
+
     this.flush = function () {
       var url, msg, config;
       while (url = pendingConnects.shift()) {
@@ -139,6 +154,10 @@
         if (j > -1) {
           sendQueue.splice(j, 1);
         }
+      }
+
+      while (msg = pendingMessages.shift()) {
+        callMessageCallbacks(msg.url, msg.data);
       }
     };
 
