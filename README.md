@@ -137,8 +137,9 @@ name                           | arguments  | description
 -------------------------------|------------|-----------------------------------
 flush                          |            | Executes all pending requests
 expectConnect                  | url:String | Specify the url of an expected WebSocket connection
-expectClose                    |            | Expect "close" to be called on the WebSocket
+expectClose                    | url:String | Expect "close" to be called on the WebSocket
 expectSend                     | msg:String | Expectation of send to be called, with required message
+mockClose                      | url:String | Used to fake close a socket and test corresponding close handlers
 verifyNoOutstandingExpectation |            | Makes sure all expectations have been satisfied, should be called in afterEach
 verifyNoOutstandingRequest     |            | Makes sure no requests are pending, should be called in afterEach
 
