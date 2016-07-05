@@ -11,6 +11,13 @@ module.exports = function(config) {
     // frameworks to use
     frameworks: ['jasmine'],
 
+plugins: [
+          'karma-jasmine',
+          'karma-coverage',
+          'karma-chrome-launcher',
+          'karma-phantomjs-launcher'
+        ],
+
     // list of files / patterns to load in the browser
     files: [
       'bower_components/angular/angular.js',
@@ -51,9 +58,7 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
     browsers: [
-      'Chrome',
-      'Firefox',
-      'Safari'
+      'Chrome'
     ],
 
     customLaunchers: {
