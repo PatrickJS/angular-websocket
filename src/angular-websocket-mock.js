@@ -102,6 +102,14 @@ function $WebSocketBackend() {
     }
   }
 
+  function setReadyState(url, state) {
+    if(existingMocks[url]) {
+      existingMocks[url].map(function(socketMock) {
+        socketMock.readyState = state;
+      });
+    }
+  }
+
   this.flush = function () {
     var url, msg, config;
     while (url = pendingConnects.shift()) {
@@ -109,6 +117,7 @@ function $WebSocketBackend() {
       if (i > -1) {
         connectQueue.splice(i, 1);
         callOpenCallbacks(url);
+        setReadyState(url, 1);
       }
       // if (config && config.url) {
       // }
@@ -120,6 +129,7 @@ function $WebSocketBackend() {
       if(i > -1) {
         closeQueue.splice(i, 1);
         callCloseCallbacks(pendingClose.url, pendingClose.code);
+        setReadyState(pendingClose.url, 3);
       }
     }
 

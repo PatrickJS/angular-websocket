@@ -154,6 +154,11 @@ describe('angular-websocket', function() {
         expect(typeof ws.socket.onerror).toBe('function');
         expect(typeof ws.socket.onclose).toBe('function');
       });
+
+      it('should set readyState', function() {
+        $websocketBackend.flush();
+        expect(ws.readyState).toEqual(ws._readyStateConstants.OPEN);
+      });
     });
 
 
@@ -189,6 +194,13 @@ describe('angular-websocket', function() {
         $websocketBackend.expectClose(url);
         ws.socket.bufferedAmount = 5;
         ws.close(true);
+      });
+
+      it('should set readyState', function() {
+        $websocketBackend.expectClose(url);
+        ws.close();
+        $websocketBackend.flush();
+        expect(ws.readyState).toEqual(ws._readyStateConstants.CLOSED);
       });
     });
 
@@ -959,8 +971,6 @@ describe('angular-websocket', function() {
        $websocketBackend.flush();
        expect(spy).toHaveBeenCalled();
      });
-
-     //it(should be automatically called on error)
    });
   }); // end $websocketBackend
 }); // end $websocket
