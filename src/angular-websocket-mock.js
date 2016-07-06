@@ -96,7 +96,7 @@ function $WebSocketBackend() {
     if(existingMocks[url]) {
       existingMocks[url].map(function(socketMock) {
         if(socketMock.onmessage && typeof socketMock.onmessage === "function") {
-          socketMock.onmessage(data);
+          socketMock.onmessage({data: JSON.stringify(data)});
         }
       });
     }
