@@ -120,7 +120,7 @@ server in order to test your applications:
 ```javascript
     var $websocketBackend;
 
-    beforeEach(angular.mock.module('ngWebSocket', 'ngWebSocketMock');
+    beforeEach(angular.mock.module('ngWebSocket', 'ngWebSocketMock'));
 
     beforeEach(inject(function (_$websocketBackend_) {
       $websocketBackend = _$websocketBackend_;

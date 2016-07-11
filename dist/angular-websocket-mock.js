@@ -54,6 +54,7 @@
     };
 
     this.fakeClose = function (url, code) {
+      closeQueue.push(url);
       if (existingMocks[url]) {
         existingMocks[url].map(function (mockSocket) {
           mockSocket.close(code);

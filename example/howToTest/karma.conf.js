@@ -13,13 +13,12 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/angular/angular.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'dist/angular-websocket.js',
-      'dist/angular-websocket-mock.js',
-      'test/angular-websocket.spec.js',
-      'example/howToTest/controller.js',
-      'example/howToTest/controller.spec.js',
+      '../../bower_components/angular/angular.js',
+      '../../bower_components/angular-mocks/angular-mocks.js',
+      '../../dist/angular-websocket.js',
+      '../../dist/angular-websocket-mock.js',
+      './controller.js',
+      './controller.spec.js'
     ],
 
     // list of files to exclude
@@ -39,7 +38,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_WARN,
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
@@ -52,18 +51,7 @@ module.exports = function(config) {
     // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
     // - PhantomJS
     // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: [
-      'Chrome',
-      'Firefox',
-      'Safari'
-    ],
-
-    customLaunchers: {
-      'Chrome_travis_ci': {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
-      }
-    },
+    browsers: ['PhantomJS'],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
@@ -72,10 +60,6 @@ module.exports = function(config) {
     // if true, it capture browsers, run tests and exit
     singleRun: true
   };
-
-  if (process.env.TRAVIS){
-    configuration.browsers = ['Firefox', 'Chrome_travis_ci'];
-  }
 
   config.set(configuration);
 };

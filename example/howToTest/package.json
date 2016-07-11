@@ -1,0 +1,6 @@
+{
+  "name": "howToTest",
+  "scripts": {
+    "test": "karma start karma.conf.js"
+  }
+}

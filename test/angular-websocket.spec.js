@@ -958,7 +958,6 @@ describe('angular-websocket', function() {
      it("should be automatically called on fake close", function() {
        var spy = jasmine.createSpy('callback');
        ws.onCloseCallbacks.push(spy);
-       $websocketBackend.expectClose(url);
        $websocketBackend.fakeClose(url);
        $websocketBackend.flush();
        expect(spy).toHaveBeenCalled();
