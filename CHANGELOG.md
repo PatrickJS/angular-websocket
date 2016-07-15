@@ -1,3 +1,8 @@
+## 2.0.1 (unreleased)
+
+Features:
+  - reconnect(): Make logging to console optional
+
 ## 2.0.0 (2016-5-21)
 
 Features:

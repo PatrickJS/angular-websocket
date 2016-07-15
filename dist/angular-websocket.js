@@ -25,12 +25,6 @@
     };
   }
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-  };
-
   var Socket;
 
   if (typeof window === 'undefined') {
@@ -98,6 +92,7 @@
       this.initialTimeout = options && options.initialTimeout || 500; // 500ms
       this.maxTimeout = options && options.maxTimeout || 5 * 60 * 1000; // 5 minutes
       this.reconnectIfNotNormalClose = options && options.reconnectIfNotNormalClose || false;
+      this.consoleLogReconnect = options && options.consoleLogReconnect && true;
       this.binaryType = options && options.binaryType || 'blob';
 
       this._reconnectAttempts = 0;
@@ -333,7 +328,9 @@
       var backoffDelay = this._getBackoffDelay(++this._reconnectAttempts);
 
       var backoffDelaySeconds = backoffDelay / 1000;
-      console.log('Reconnecting in ' + backoffDelaySeconds + ' seconds');
+      if (this.consoleLogReconnect) {
+        console.log('Reconnecting in ' + backoffDelaySeconds + ' seconds');
+      }
 
       $timeout(_angular2.default.bind(this, this._connect), backoffDelay);
 
