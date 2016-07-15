@@ -383,6 +383,21 @@ describe('angular-websocket', function() {
         $websocketBackend.flush();
       });
 
+      it('should add reconnectDelaySeconds to close event', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {reconnectIfNotNormalClose: true});
+        var onCloseSpy = jasmine.createSpy('onClose');
+        ws.onClose(onCloseSpy);
+        ws._onCloseHandler({code: 4000});
+        expect(onCloseSpy).toHaveBeenCalled();
+        var closeEvent = onCloseSpy.calls.mostRecent().args[0];
+        expect(closeEvent.reconnectDelaySeconds).toEqual(jasmine.any(Number))
+
+        $websocketBackend.flush();
+      });
+
       it('should not call .reconnect if the CloseEvent indicates an intentional close and the reconnectIfNotNormalClose flag is false', function() {
         var url = 'ws://foo/onclose';
         $websocketBackend.expectConnect(url);

@@ -2,6 +2,7 @@
 
 Features:
   - reconnect(): Make logging to console optional
+  - close(): Add reconnectDelaySeconds property to close event
 
 ## 2.0.0 (2016-5-21)
 
