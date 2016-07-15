@@ -236,6 +236,18 @@ describe('angular-websocket', function() {
         $websocketBackend.flush();
       }));
 
+      it('should log if consoleLogReconnect is not set', function() {
+        console.log = jasmine.createSpy('log')
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        ws.reconnect();
+        expect(console.log).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
       it('should not log if consoleLogReconnect is false', function() {
         console.log = jasmine.createSpy('log')
         var url = 'ws://foo/onclose';
