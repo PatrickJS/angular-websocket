@@ -142,6 +142,13 @@
     };
 
     $WebSocket.prototype._connect = function _connect(force) {
+      if (this.socket) {
+        this.socket.onmessage = null;
+        this.socket.onopen = null;
+        this.socket.onerror = null;
+        this.socket.onclose = null;
+        this.socket.close();
+      }
       if (force || !this.socket || this.socket.readyState !== this._readyStateConstants.OPEN) {
         this.socket = $websocketBackend.create(this.url, this.protocols);
         this.socket.onmessage = _angular2.default.bind(this, this._onMessageHandler);

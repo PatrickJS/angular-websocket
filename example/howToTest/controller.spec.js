@@ -1,14 +1,15 @@
 describe("ControllerToTest", function() {
-	var controller, $scope, $websocketBackend;
+	var controller, $scope, $websocketBackend, $timeout;
 
 	beforeEach(angular.mock.module('ngWebSocket', 'ngWebSocketMock'));
 
 	beforeEach(function() {
 		module("appToTest");
-		inject(function(_$websocketBackend_, _$controller_) {
+		inject(function(_$websocketBackend_, _$controller_, _$timeout_) {
 			$websocketBackend = _$websocketBackend_;
 			$scope = {};
       		controller = _$controller_('ControllerToTest', { $scope: $scope });
+      		$timeout = _$timeout_;
 		});
 
 		$websocketBackend.expectConnect("wss://foo");
@@ -53,5 +54,16 @@ describe("ControllerToTest", function() {
 		$websocketBackend.expectSend("wss://foo", "greetings");
 		$scope.sendMessage("greetings");
 		$websocketBackend.flush();
+	});
+
+	it("should reconnect after connection was closed", function() {
+		connect();
+		$websocketBackend.fakeClose("wss://foo", 4000);
+		$websocketBackend.flush();
+		expect($scope.isConnected).toEqual(false);
+		$websocketBackend.expectConnect("wss://foo");
+		$timeout.flush(90001);
+		$websocketBackend.flush();
+		expect($scope.isConnected).toEqual(true);
 	});
 });

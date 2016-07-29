@@ -11,7 +11,6 @@ function $WebSocketBackend() {
   var mock = false;
   var existingMocks = {};
 
-
   function $MockWebSocket(url, protocols) {
     this.url = url;
     this.protocols = protocols;
