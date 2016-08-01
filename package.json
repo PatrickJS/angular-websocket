@@ -1,6 +1,6 @@
 {
   "name": "angular-websocket",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "./dist/angular-websocket.js",
   "description": "An Angular WebSocket service for connecting client applications to servers.",
   "homepage": "https://github.com/angular-class/angular-websocket",
