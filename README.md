@@ -85,6 +85,7 @@ onOpen      | callback:Function                                      | Function 
 onClose     | callback:Function                                      | Function to be executed each time a socket connection is closed for this instance.
 onError     | callback:Function                                      | Function to be executed each time a socket connection has an Error for this instance.
 close       | force:Boolean:_optional_                               | Close the underlying socket, as long as no data is still being sent from the client. Optionally force close, even if data is still being sent, by passing `true` as the `force` parameter. To check if data is being sent, read the value of `socket.bufferedAmount`.
+reconnect   | none                                                   | Close the underlying socket (if open), and attempt to reconnect
 
 ### Properties
 name               | type             | description
