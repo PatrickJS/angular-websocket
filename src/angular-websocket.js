@@ -367,11 +367,15 @@ function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
 // $WebSocketBackendProvider.$inject = ['$log'];
 function $WebSocketBackendProvider($log) {
-  this.create = function create(url, protocols) {
+  this.create = function create(url, protocols, options = {}) {
     var match = /wss?:\/\//.exec(url);
 
     if (!match) {
       throw new Error('Invalid url provided');
+    }
+
+    if (protocols && options) {
+      return new Socket(url, protocols, options);
     }
 
     if (protocols) {
