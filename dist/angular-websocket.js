@@ -321,7 +321,7 @@
       }
 
       if ($websocketBackend.isMocked && $websocketBackend.isMocked() && $websocketBackend.isConnected(this.url)) {
-        this._onMessageHandler($websocketBackend.mockSend());
+        $websocketBackend.mockSend();
       }
 
       return promise;
