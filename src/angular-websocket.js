@@ -49,6 +49,8 @@ function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
       protocols = undefined;
     }
 
+    options = options || {};
+
     this.protocols = protocols;
     this.url = url || 'Missing URL';
     this.ssl = /(wss)/i.test(this.url);
@@ -59,14 +61,13 @@ function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
     // this.trasnmitting = false;
     // this.buffer = [];
 
-    // TODO: refactor options to use isDefined
-    this.scope                       = options && options.scope                      || $rootScope;
-    this.rootScopeFailover           = options && options.rootScopeFailover          && true;
-    this.useApplyAsync               = options && options.useApplyAsync              || false;
-    this.initialTimeout              = options && options.initialTimeout             || 500; // 500ms
-    this.maxTimeout                  = options && options.maxTimeout                 || 5 * 60 * 1000; // 5 minutes
-    this.reconnectIfNotNormalClose   = options && options.reconnectIfNotNormalClose  || false;
-    this.binaryType                  = options && options.binaryType                 || 'blob';
+    this.scope                       = isDefined(options.scope) ? options.scope : $rootScope;
+    this.rootScopeFailover           = isDefined(options.rootScopeFailover) && true;
+    this.useApplyAsync               = isDefined(options.useApplyAsync);
+    this.initialTimeout              = isDefined(options.initialTimeout) ? options.initialTimeout : 500;
+    this.maxTimeout                  = isDefined(options.maxTimeout) ? options.maxTimeout : 5 * 60 * 1000;
+    this.reconnectIfNotNormalClose   = isDefined(options.reconnectIfNotNormalClose);
+    this.binaryType                  = isDefined(options.binaryType) ? options.binaryType : 'blob';
 
     this._reconnectAttempts = 0;
     this.sendQueue          = [];
