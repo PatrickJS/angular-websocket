@@ -1,4 +1,4 @@
-## 2.0.1 (unreleased)
+## (unreleased)
 
 Features:
   - reconnect(): Make logging to console optional
