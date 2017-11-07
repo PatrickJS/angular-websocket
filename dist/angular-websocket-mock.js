@@ -1,139 +1,123 @@
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', 'angular'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('angular'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.angular);
-    global.angularWebsocketMock = mod.exports;
+'use strict';
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function $WebSocketBackend() {
+  var connectQueue = [];
+  var pendingConnects = [];
+  var closeQueue = [];
+  var pendingCloses = [];
+  var sendQueue = [];
+  var pendingSends = [];
+  var mock = false;
+
+  function $MockWebSocket(url, protocols) {
+    this.protocols = protocols;
+    this.ssl = /(wss)/i.test(this.url);
   }
-})(this, function (module, _angular) {
-  'use strict';
 
-  var _angular2 = _interopRequireDefault(_angular);
+  $MockWebSocket.prototype.send = function (msg) {
+    pendingSends.push(msg);
+  };
 
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
+  this.mockSend = function () {
+    if (mock) {
+      return sendQueue.shift();
+    }
+  };
+
+  this.mock = function () {
+    mock = true;
+  };
+
+  this.isMocked = function () {
+    return mock;
+  };
+
+  this.isConnected = function (url) {
+    return connectQueue.indexOf(url) > -1;
+  };
+
+  $MockWebSocket.prototype.close = function () {
+    pendingCloses.push(true);
+  };
+
+  function createWebSocketBackend(url, protocols) {
+    pendingConnects.push(url);
+    // pendingConnects.push({
+    //   url: url,
+    //   protocols: protocols
+    // });
+
+    if (protocols) {
+      return new $MockWebSocket(url, protocols);
+    }
+    return new $MockWebSocket(url);
   }
+  this.create = createWebSocketBackend;
+  this.createWebSocketBackend = createWebSocketBackend;
 
-  function $WebSocketBackend() {
-    var connectQueue = [];
-    var pendingConnects = [];
-    var closeQueue = [];
-    var pendingCloses = [];
-    var sendQueue = [];
-    var pendingSends = [];
-    var mock = false;
-
-    function $MockWebSocket(url, protocols) {
-      this.protocols = protocols;
-      this.ssl = /(wss)/i.test(this.url);
+  this.flush = function () {
+    var url, msg, config;
+    while (url = pendingConnects.shift()) {
+      var i = connectQueue.indexOf(url);
+      if (i > -1) {
+        connectQueue.splice(i, 1);
+      }
+      // if (config && config.url) {
+      // }
     }
 
-    $MockWebSocket.prototype.send = function (msg) {
-      pendingSends.push(msg);
-    };
-
-    this.mockSend = function () {
-      if (mock) {
-        return sendQueue.shift();
-      }
-    };
-
-    this.mock = function () {
-      mock = true;
-    };
-
-    this.isMocked = function () {
-      return mock;
-    };
-
-    this.isConnected = function (url) {
-      return connectQueue.indexOf(url) > -1;
-    };
-
-    $MockWebSocket.prototype.close = function () {
-      pendingCloses.push(true);
-    };
-
-    function createWebSocketBackend(url, protocols) {
-      pendingConnects.push(url);
-      // pendingConnects.push({
-      //   url: url,
-      //   protocols: protocols
-      // });
-
-      if (protocols) {
-        return new $MockWebSocket(url, protocols);
-      }
-      return new $MockWebSocket(url);
+    while (pendingCloses.shift()) {
+      closeQueue.shift();
     }
-    this.create = createWebSocketBackend;
-    this.createWebSocketBackend = createWebSocketBackend;
 
-    this.flush = function () {
-      var url, msg, config;
-      while (url = pendingConnects.shift()) {
-        var i = connectQueue.indexOf(url);
-        if (i > -1) {
-          connectQueue.splice(i, 1);
+    while (msg = pendingSends.shift()) {
+      var j;
+      sendQueue.forEach(function (pending, i) {
+        if (pending.message === msg.message) {
+          j = i;
         }
-        // if (config && config.url) {
-        // }
+      });
+
+      if (j > -1) {
+        sendQueue.splice(j, 1);
       }
+    }
+  };
 
-      while (pendingCloses.shift()) {
-        closeQueue.shift();
-      }
+  this.expectConnect = function (url, protocols) {
+    connectQueue.push(url);
+    // connectQueue.push({url: url, protocols: protocols});
+  };
 
-      while (msg = pendingSends.shift()) {
-        var j;
-        sendQueue.forEach(function (pending, i) {
-          if (pending.message === msg.message) {
-            j = i;
-          }
-        });
+  this.expectClose = function () {
+    closeQueue.push(true);
+  };
 
-        if (j > -1) {
-          sendQueue.splice(j, 1);
-        }
-      }
-    };
+  this.expectSend = function (msg) {
+    sendQueue.push(msg);
+  };
 
-    this.expectConnect = function (url, protocols) {
-      connectQueue.push(url);
-      // connectQueue.push({url: url, protocols: protocols});
-    };
+  this.verifyNoOutstandingExpectation = function () {
+    if (connectQueue.length || closeQueue.length || sendQueue.length) {
+      throw new Error('Requests waiting to be flushed');
+    }
+  };
 
-    this.expectClose = function () {
-      closeQueue.push(true);
-    };
+  this.verifyNoOutstandingRequest = function () {
+    if (pendingConnects.length || pendingCloses.length || pendingSends.length) {
+      throw new Error('Requests waiting to be processed');
+    }
+  };
+} // end $WebSocketBackend
 
-    this.expectSend = function (msg) {
-      sendQueue.push(msg);
-    };
+_angular2.default.module('ngWebSocketMock', []).service('WebSocketBackend', $WebSocketBackend).service('$websocketBackend', $WebSocketBackend);
 
-    this.verifyNoOutstandingExpectation = function () {
-      if (connectQueue.length || closeQueue.length || sendQueue.length) {
-        throw new Error('Requests waiting to be flushed');
-      }
-    };
+_angular2.default.module('angular-websocket-mock', ['ngWebSocketMock']);
 
-    this.verifyNoOutstandingRequest = function () {
-      if (pendingConnects.length || pendingCloses.length || pendingSends.length) {
-        throw new Error('Requests waiting to be processed');
-      }
-    };
-  } // end $WebSocketBackend
-
-  _angular2.default.module('ngWebSocketMock', []).service('WebSocketBackend', $WebSocketBackend).service('$websocketBackend', $WebSocketBackend);
-
-  _angular2.default.module('angular-websocket-mock', ['ngWebSocketMock']);
-
-  module.exports = _angular2.default.module('ngWebSocketMock');
-});
+module.exports = _angular2.default.module('ngWebSocketMock');
