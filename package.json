@@ -41,8 +41,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "angular": "*",
-    "ws": "^1.1.0"
+    "angular": "*"
   },
   "devDependencies": {
     "angular-animate": "^1.3.13",
