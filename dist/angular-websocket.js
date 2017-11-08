@@ -10,18 +10,7 @@ var _angular2 = _interopRequireDefault(_angular);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Socket;
-
-if (typeof window === 'undefined') {
-  try {
-    var ws = require('ws');
-
-    Socket = ws.Client || ws.client || ws;
-  } catch (e) {}
-}
-
-// Browser
-Socket = Socket || window.WebSocket || window.MozWebSocket;
+var Socket = window.WebSocket || window.MozWebSocket;
 
 var noop = _angular2.default.noop;
 var objectFreeze = Object.freeze ? Object.freeze : noop;
