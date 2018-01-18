@@ -154,6 +154,11 @@ describe('angular-websocket', function() {
         expect(typeof ws.socket.onerror).toBe('function');
         expect(typeof ws.socket.onclose).toBe('function');
       });
+
+      it('should set readyState', function() {
+        $websocketBackend.flush();
+        expect(ws.readyState).toEqual(ws._readyStateConstants.OPEN);
+      });
     });
 
 
@@ -174,7 +179,7 @@ describe('angular-websocket', function() {
       });
 
       it('should call close on the underlying socket', function() {
-        $websocketBackend.expectClose();
+        $websocketBackend.expectClose(url);
         ws.close();
       });
 
@@ -186,9 +191,16 @@ describe('angular-websocket', function() {
 
 
       it('should accept a force param to close the socket even if bufferedAmount is greater than 0', function() {
-        $websocketBackend.expectClose();
+        $websocketBackend.expectClose(url);
         ws.socket.bufferedAmount = 5;
         ws.close(true);
+      });
+
+      it('should set readyState', function() {
+        $websocketBackend.expectClose(url);
+        ws.close();
+        $websocketBackend.flush();
+        expect(ws.readyState).toEqual(ws._readyStateConstants.CLOSED);
       });
     });
 
@@ -199,7 +211,7 @@ describe('angular-websocket', function() {
         $websocketBackend.expectConnect(url);
 
         var ws = $websocket(url);
-        $websocketBackend.expectClose();
+        $websocketBackend.expectClose(url);
         ws.reconnect();
 
         $websocketBackend.flush();
@@ -918,6 +930,46 @@ describe('angular-websocket', function() {
 
    }); // end ._onErrorHandler()
 
+   describe('eventHandlers', function() {
+    var url, ws;
 
+     beforeEach(function() {
+       url = 'ws://foo';
+       $websocketBackend.expectConnect(url);
+       ws = $websocket(url);
+     });
+
+     it('should be automatically called on open', function() {
+       var spy = jasmine.createSpy('callback');
+       ws.onOpenCallbacks.push(spy);
+       $websocketBackend.flush();
+       expect(spy).toHaveBeenCalled();
+     });
+
+     it('should be automatically called on close', function() {
+       var spy = jasmine.createSpy('callback');
+       ws.onCloseCallbacks.push(spy);
+       $websocketBackend.expectClose(url);
+       ws.close();
+       $websocketBackend.flush();
+       expect(spy).toHaveBeenCalled();
+     });
+
+     it("should be automatically called on fake close", function() {
+       var spy = jasmine.createSpy('callback');
+       ws.onCloseCallbacks.push(spy);
+       $websocketBackend.fakeClose(url);
+       $websocketBackend.flush();
+       expect(spy).toHaveBeenCalled();
+     });
+
+     it("should be automatically called on fake send", function() {
+       var spy = jasmine.createSpy('callback');
+       ws.onMessage(spy);
+       $websocketBackend.fakeMessage(url, {data: "test"});
+       $websocketBackend.flush();
+       expect(spy).toHaveBeenCalled();
+     });
+   });
   }); // end $websocketBackend
 }); // end $websocket

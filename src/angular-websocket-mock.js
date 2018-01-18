@@ -7,13 +7,19 @@ function $WebSocketBackend() {
   var pendingCloses = [];
   var sendQueue = [];
   var pendingSends = [];
+  var pendingMessages = [];
   var mock = false;
-
+  var existingMocks = {};
 
   function $MockWebSocket(url, protocols) {
+    this.url = url;
     this.protocols = protocols;
     this.ssl = /(wss)/i.test(this.url);
-
+    if(!existingMocks[url]) {
+      existingMocks[url] = [this];
+    } else {
+      existingMocks[url].push(this);
+    }
   }
 
   $MockWebSocket.prototype.send = function (msg) {
@@ -24,6 +30,19 @@ function $WebSocketBackend() {
     if (mock) {
       return sendQueue.shift();
     }
+  };
+
+  this.fakeClose = function(url, code) {
+    closeQueue.push(url);
+    if(existingMocks[url]) {
+      existingMocks[url].map(function(mockSocket) {
+        mockSocket.close(code);
+      });
+    }
+  };
+
+  this.fakeMessage = function(url, data) {
+    pendingMessages.push({url: url, data: data});
   };
 
   this.mock = function() {
@@ -38,8 +57,8 @@ function $WebSocketBackend() {
       return connectQueue.indexOf(url) > -1;
   };
 
-  $MockWebSocket.prototype.close = function () {
-    pendingCloses.push(true);
+  $MockWebSocket.prototype.close = function (code) {
+    pendingCloses.push({url: this.url, code: code ? code : 1000});
   };
 
   function createWebSocketBackend(url, protocols) {
@@ -57,19 +76,61 @@ function $WebSocketBackend() {
   this.create = createWebSocketBackend;
   this.createWebSocketBackend = createWebSocketBackend;
 
+  function callOpenCallbacks(url) {
+    existingMocks[url].map(function(socketMock) {
+      if(socketMock.onopen && typeof socketMock.onopen === "function") {
+        socketMock.onopen();
+      }
+    });
+  }
+
+  function callCloseCallbacks(url, code) {
+    existingMocks[url].map(function(socketMock) {
+      if(socketMock.onclose && typeof socketMock.onclose === "function") {
+        socketMock.onclose({code: code});
+      }
+    });
+  }
+
+  function callMessageCallbacks(url, data) {
+    if(existingMocks[url]) {
+      existingMocks[url].map(function(socketMock) {
+        if(socketMock.onmessage && typeof socketMock.onmessage === "function") {
+          socketMock.onmessage({data: JSON.stringify(data)});
+        }
+      });
+    }
+  }
+
+  function setReadyState(url, state) {
+    if(existingMocks[url]) {
+      existingMocks[url].map(function(socketMock) {
+        socketMock.readyState = state;
+      });
+    }
+  }
+
   this.flush = function () {
     var url, msg, config;
     while (url = pendingConnects.shift()) {
       var i = connectQueue.indexOf(url);
       if (i > -1) {
         connectQueue.splice(i, 1);
+        callOpenCallbacks(url);
+        setReadyState(url, 1);
       }
       // if (config && config.url) {
       // }
     }
 
-    while (pendingCloses.shift()) {
-      closeQueue.shift();
+    var pendingClose;
+    while (pendingClose = pendingCloses.shift()) {
+      var i = closeQueue.indexOf(pendingClose.url);
+      if(i > -1) {
+        closeQueue.splice(i, 1);
+        callCloseCallbacks(pendingClose.url, pendingClose.code);
+        setReadyState(pendingClose.url, 3);
+      }
     }
 
     while (msg = pendingSends.shift()) {
@@ -84,6 +145,10 @@ function $WebSocketBackend() {
         sendQueue.splice(j, 1);
       }
     }
+
+    while (msg = pendingMessages.shift()) {
+      callMessageCallbacks(msg.url, msg.data);
+    }
   };
 
   this.expectConnect = function (url, protocols) {
@@ -91,8 +156,8 @@ function $WebSocketBackend() {
     // connectQueue.push({url: url, protocols: protocols});
   };
 
-  this.expectClose = function () {
-    closeQueue.push(true);
+  this.expectClose = function (url) {
+    closeQueue.push(url);
   };
 
   this.expectSend = function (msg) {
