@@ -66,6 +66,7 @@ function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
     this.initialTimeout              = options && options.initialTimeout             || 500; // 500ms
     this.maxTimeout                  = options && options.maxTimeout                 || 5 * 60 * 1000; // 5 minutes
     this.reconnectIfNotNormalClose   = options && options.reconnectIfNotNormalClose  || false;
+    this.consoleLogReconnect         = (options && options.consoleLogReconnect !== undefined) ? options.consoleLogReconnect : true;
     this.binaryType                  = options && options.binaryType                 || 'blob';
 
     this._reconnectAttempts = 0;
@@ -200,6 +201,9 @@ function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
 
   $WebSocket.prototype._onCloseHandler = function _onCloseHandler(event) {
     var self = this;
+    if ((this.reconnectIfNotNormalClose && event.code !== this._normalCloseCode) || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
+      this.reconnect(event);
+    }
     if (self.useApplyAsync) {
       self.scope.$applyAsync(function() {
         self.notifyCloseCallbacks(event);
@@ -207,9 +211,6 @@ function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
     } else {
       self.notifyCloseCallbacks(event);
       self.safeDigest(true);
-    }
-    if ((this.reconnectIfNotNormalClose && event.code !== this._normalCloseCode) || this._reconnectableStatusCodes.indexOf(event.code) > -1) {
-      this.reconnect();
     }
   };
 
@@ -307,13 +308,18 @@ function $WebSocketProvider($rootScope, $q, $timeout, $websocketBackend) {
     return promise;
   };
 
-  $WebSocket.prototype.reconnect = function reconnect() {
+  $WebSocket.prototype.reconnect = function reconnect(event) {
     this.close();
 
     var backoffDelay = this._getBackoffDelay(++this._reconnectAttempts);
 
     var backoffDelaySeconds = backoffDelay / 1000;
-    console.log('Reconnecting in ' + backoffDelaySeconds + ' seconds');
+    if (typeof event === 'object') {
+      event.reconnectDelaySeconds = backoffDelaySeconds;
+    }
+    if (this.consoleLogReconnect) {
+      console.log('Reconnecting in ' + backoffDelaySeconds + ' seconds');
+    }
 
     $timeout(angular.bind(this, this._connect), backoffDelay);
 

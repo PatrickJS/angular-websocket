@@ -235,6 +235,30 @@ describe('angular-websocket', function() {
 
         $websocketBackend.flush();
       }));
+
+      it('should log if consoleLogReconnect is not set', function() {
+        console.log = jasmine.createSpy('log')
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url);
+        ws.reconnect();
+        expect(console.log).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should not log if consoleLogReconnect is false', function() {
+        console.log = jasmine.createSpy('log')
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {consoleLogReconnect: false});
+        ws.reconnect();
+        expect(console.log).not.toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
     });
 
 
@@ -367,6 +391,21 @@ describe('angular-websocket', function() {
         var spy = spyOn(ws, 'reconnect');
         ws._onCloseHandler({code: 4000});
         expect(spy).toHaveBeenCalled();
+
+        $websocketBackend.flush();
+      });
+
+      it('should add reconnectDelaySeconds to close event', function() {
+        var url = 'ws://foo/onclose';
+        $websocketBackend.expectConnect(url);
+
+        var ws = $websocket(url, {reconnectIfNotNormalClose: true});
+        var onCloseSpy = jasmine.createSpy('onClose');
+        ws.onClose(onCloseSpy);
+        ws._onCloseHandler({code: 4000});
+        expect(onCloseSpy).toHaveBeenCalled();
+        var closeEvent = onCloseSpy.calls.mostRecent().args[0];
+        expect(closeEvent.reconnectDelaySeconds).toEqual(jasmine.any(Number))
 
         $websocketBackend.flush();
       });
